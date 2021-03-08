@@ -28,9 +28,9 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'nginxlog-exporter'
+  - job_name: 'nginx-prometheus-exporter'
     scrape_interval: 5s
 
     static_configs:
-      - targets: ['nginxlog-exporter:4040']
+      - targets: ['nginx-prometheus-exporter:9113']
   

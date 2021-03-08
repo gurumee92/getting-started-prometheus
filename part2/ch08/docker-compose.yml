@@ -9,18 +9,16 @@ services:
       - 8080:80
     volumes:
       - ./config/nginx.conf:/etc/nginx/nginx.conf
-      - ./config/nginx-default.conf:/etc/nginx/conf.d/nginx.conf
+      - ./config/nginx-default.conf:/etc/nginx/conf.d/default.conf
       - ./logs:/var/log/nginx
   
-  nginxlog-exporter:
-    container_name: nginxlog-exporter
-    image: quay.io/martinhelmich/prometheus-nginxlog-exporter
+  nginx-prometheus-exporter:
+    container_name: nginx-prometheus-exporter
+    image: nginx/nginx-prometheus-exporter:latest
     ports:
-      - 4040:4040
-    volumes:
-      - ./config/prometheus-nginxlog-exporter.yml:/etc/prometheus-nginxlog-exporter.yml
-      - ./logs:/var/log/nginx
-    command: -config-file /etc/prometheus-nginxlog-exporter.yml
+      - 9113:9113
+    command: -nginx.scrape-uri http://nginx/metrics
+    restart: always
 
   prometheus:
     container_name: prometheus
@@ -43,7 +41,7 @@ services:
     volumes:
       - ./config/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - ./config/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
-      - ./config/dashboard.json:/var/lib/grafana/dashboards/dashboard.json
+      # - ./config/dashboard.json:/var/lib/grafana/dashboards/dashboard.json
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
