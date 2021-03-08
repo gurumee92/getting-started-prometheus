@@ -41,7 +41,7 @@ services:
     volumes:
       - ./config/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - ./config/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
-      # - ./config/dashboard.json:/var/lib/grafana/dashboards/dashboard.json
+      - ./config/dashboard.json:/var/lib/grafana/dashboards/dashboard.json
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
