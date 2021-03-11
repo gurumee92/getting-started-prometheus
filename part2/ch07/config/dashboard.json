@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 9,
-  "iteration": 1615360688442,
+  "iteration": 1615423619088,
   "links": [],
   "panels": [
     {
@@ -394,9 +394,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (method)(rate(nginx_http_response_time_seconds_hist_sum{instance=\"$node\"}[$__rate_interval])) \n/ \nsum by (method)(rate(nginx_http_response_time_seconds_hist_count{instance=\"$node\"}[$__rate_interval]))",
+          "expr": "sum by (method, request_uri)(rate(nginx_http_response_time_seconds_hist_sum{instance=\"$node\"}[$__rate_interval])) \n/ \nsum by (method, request_uri)(rate(nginx_http_response_time_seconds_hist_count{instance=\"$node\"}[$__rate_interval]))",
           "interval": "",
-          "legendFormat": "response_time - {{method}}",
+          "legendFormat": "{{method}}-{{request_uri}}",
           "refId": "A"
         }
       ],
@@ -498,9 +498,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
-          "text": "172.31.37.117:4040",
-          "value": "172.31.37.117:4040"
+          "selected": true,
+          "text": "172.31.41.180:4040",
+          "value": "172.31.41.180:4040"
         },
         "datasource": "Prometheus",
         "definition": "label_values(nginx_parse_errors_total{job=\"$job\"}, instance)",
@@ -532,5 +532,5 @@
   "timezone": "",
   "title": "Monitoring HTTP Server - NGINX(nginxlog-exporter)",
   "uid": "mU7NJg8Gk",
-  "version": 25
+  "version": 26
 }
