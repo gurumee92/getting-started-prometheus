@@ -12,5 +12,9 @@ namespaces:
       files:
         - /var/log/nginx/access.log
     only_count: true
-      
+    relabel_configs:
+    - target_label: request_uri
+      from: request
+      split: 2
+      separator: ' '  
   
