@@ -1,0 +1,36 @@
+services:
+  server:
+    container_name: server
+    build: ./server
+    ports:
+      - "8080:8080"
+      - "5000:5000"
+
+  # # monitoring
+  # prometheus:
+  #   container_name: prometheus
+  #   image: prom/prometheus:latest
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #     - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+  #     - '--web.console.templates=/usr/share/prometheus/consoles'
+  #   volumes:
+  #     - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   ports:
+  #     - 9090:9090
+
+  # # dashboard & alert
+  # grafana:
+  #   image: grafana/grafana:7.3.7
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./docker/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+  #     - ./docker/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
+  #     - ./docker/dashboard_was.json:/var/lib/grafana/dashboards/dashboard_was.json
+
+  #   environment:
+  #     - GF_AUTH_ANONYMOUS_ENABLED=true
+  #     - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin # Viewer
+  #     - GF_USERS_DEFAULT_THEME=light
