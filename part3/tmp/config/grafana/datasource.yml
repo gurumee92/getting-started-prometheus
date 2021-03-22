@@ -1,0 +1,16 @@
+# config file version
+apiVersion: 1
+
+deleteDatasources:
+  - name: Cortex
+
+datasources:
+- name: Cortex
+  type: prometheus
+  access: proxy
+  orgId: 1
+  url: http://cortex-gateway/api/prom
+  basicAuth: false
+  isDefault: false
+  version: 1
+  editable: false

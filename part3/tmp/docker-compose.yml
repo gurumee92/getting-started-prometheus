@@ -1,0 +1,104 @@
+version: "3"
+
+services:
+  grafana:
+    image: grafana/grafana:7.3.7
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./config/grafana/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin # Viewer
+      - GF_USERS_DEFAULT_THEME=light
+  # gateway
+  cortex-gateway:
+    image: nginx:latest
+    container_name: cortex-gateway
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8888:80"
+
+  # ring store
+  consul:
+    image: consul:latest
+    container_name: consul
+    ports:
+      - "8500:8500"
+
+  # # chunk & index storage
+  # cassandra:
+  #   image: cassandra:latest
+  #   container_name: cassandra
+  #   ports:
+  #     - "9042:9042"
+
+  cortex-frontend:
+    image: cortexproject/cortex:v1.7.0
+    container_name: cortex-frontend
+    volumes:
+        - ./config/single-process-config.yaml:/etc/single-process-config.yaml
+    ports:
+        - "9011:9009"
+    command: 
+      "-config.file=/etc/single-process-config.yaml -ring.store=consul -consul.hostname=consul:8500 -distributor.replication-factor=3"
+    restart: always
+
+  # ingester & distributor
+  cortex1:
+    image: cortexproject/cortex:v1.7.0
+    container_name: cortex1
+    volumes:
+        - ./config/single-process-config.yaml:/etc/single-process-config.yaml
+    ports:
+        - "9009:9009"
+    command: 
+      "-config.file=/etc/single-process-config.yaml -ring.store=consul -consul.hostname=consul:8500 -distributor.replication-factor=3"
+    restart: always
+
+  cortex2:
+    image: cortexproject/cortex:v1.7.0
+    container_name: cortex2
+    volumes:
+        - ./config/single-process-config.yaml:/etc/single-process-config.yaml
+    ports:
+        - "9010:9009"
+    command: 
+      "-config.file=/etc/single-process-config.yaml -ring.store=consul -consul.hostname=consul:8500 -distributor.replication-factor=3"
+    restart: always
+  
+  prometheus1:
+    image: prom/prometheus:latest
+    container_name: prometheus1
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    volumes:
+      - ./config/prometheus1.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+  prometheus2: 
+    image: prom/prometheus:latest
+    container_name: prometheus2
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    volumes:
+      - ./config/prometheus2.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9091:9090
+
+  node-exporter:
+    container_name: node-exporter
+    image: prom/node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
