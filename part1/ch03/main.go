@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"html"
-	"math/rand"
 	"net/http"
 	"time"
 
@@ -18,24 +17,20 @@ var (
 		Help: "Hello World requested",
 	})
 
-	GAUGE_INPROGRESS = promauto.NewGauge(prometheus.GaugeOpts{
-		Name: "hello_world_inprogress",
+	GAUGE = promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "hello_world_connection",
 		Help: "Number of /gauge in progress",
-	})
-	GAUGE_LAST = promauto.NewGauge(prometheus.GaugeOpts{
-		Name: "hello_world_last_time_seconds",
-		Help: "Last Time a /guage served",
 	})
 
 	SUMMARY = promauto.NewSummary(prometheus.SummaryOpts{
 		Name: "hello_world_latency_seconds",
-		Help: "Time for a request /summary",
+		Help: "Latency Time for a request /summary",
 	})
 
 	HISTOGRAM = promauto.NewHistogram(prometheus.HistogramOpts{
-		Name:    "hello_world_random_histogram",
-		Help:    "A histogram of normally distributed random numbers.",
-		Buckets: prometheus.LinearBuckets(-3, .1, 61),
+		Name:    "hello_world_latency_histogram",
+		Help:    "A histogram of Latency Time for a request /histogram",
+		Buckets: prometheus.LinearBuckets(0.1, 0.1, 10),
 	})
 )
 
@@ -45,10 +40,9 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func gauge(w http.ResponseWriter, r *http.Request) {
-	GAUGE_INPROGRESS.Inc()
-	time.Sleep(1 * time.Second)
-	defer GAUGE_INPROGRESS.Dec()
-	GAUGE_LAST.SetToCurrentTime()
+	GAUGE.Inc()
+	defer GAUGE.Dec()
+	time.Sleep(10 * time.Second)
 	fmt.Fprintf(w, "Gauge, %q", html.EscapeString(r.URL.Path))
 }
 
@@ -59,7 +53,8 @@ func summary(w http.ResponseWriter, r *http.Request) {
 }
 
 func histogram(w http.ResponseWriter, r *http.Request) {
-	HISTOGRAM.Observe(rand.NormFloat64())
+	start := time.Now()
+	defer HISTOGRAM.Observe(float64(time.Now().Sub(start)))
 	fmt.Fprintf(w, "Histogram, %q", html.EscapeString(r.URL.Path))
 }
 
