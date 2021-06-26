@@ -1,0 +1,17 @@
+groups:
+- name: prometheus_nginxlog_exporter
+  rules:
+  - alert: ErrorStatusAndFailRate
+    expr: | 
+      sum(rate(nginx_http_response_count_total{status=~"4.."}[1m])) >= 10
+      and
+      (
+        sum(rate(nginx_http_response_count_total{status=~"4.."}[1m])) 
+        / 
+        sum(rate(nginx_http_response_count_total[1m])) * 100
+      ) >= 50
+    for: 1m
+    labels:
+      severity: 'critical'
+    annotations:
+      summary: 'Error Status Code Bigger than 10 And Fail Rate Higher than 50%'

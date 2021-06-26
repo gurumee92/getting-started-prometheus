@@ -2,14 +2,9 @@
 global:
   scrape_interval:     15s # By default, scrape targets every 15 seconds.
   evaluation_interval: 15s # By default, scrape targets every 15 seconds.
-  
-  external_labels:
-    monitor: 'my-project'
 
 rule_files:
-  # - 'alert.rules'
-  # - "first.rules"
-  # - "second.rules"
+  - 'rules/prometheus_nginx_log_exporter_rules.yml'
 
 # alert
 # alerting:
@@ -28,9 +23,9 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'nginxlog-exporter'
+  - job_name: 'prometheus-nginxlog-exporter'
     scrape_interval: 5s
 
     static_configs:
-      - targets: ['nginxlog-exporter:4040']
+      - targets: ['prometheus-nginxlog-exporter:4040']
   

@@ -15,8 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 9,
-  "iteration": 1615423619088,
+  "iteration": 1624685732066,
   "links": [],
   "panels": [
     {
@@ -25,12 +24,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -57,7 +50,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.0.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -135,17 +128,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "color": {},
-          "custom": {},
-          "thresholds": {
-            "mode": "absolute",
-            "steps": []
-          }
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -172,7 +154,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.0.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -255,7 +237,37 @@
       "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -281,47 +293,50 @@
       },
       "id": 2,
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "fields": "",
-          "values": false
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
         },
-        "textMode": "auto"
+        "tooltip": {
+          "mode": "single"
+        }
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
-          "expr": "ceil(sum(rate(nginx_http_response_count_total{status=~\"2..\", instance=\"$node\"}[$__rate_interval])) * 5)",
+          "exemplar": true,
+          "expr": "sum(rate(nginx_http_response_count_total{status=~\"2..\", instance=\"$node\"}[$__rate_interval]))",
           "hide": false,
-          "instant": true,
+          "instant": false,
           "interval": "",
           "legendFormat": "2xx",
           "queryType": "randomWalk",
           "refId": "A"
         },
         {
-          "expr": "ceil(sum(rate(nginx_http_response_count_total{status=~\"3..\", instance=\"$node\"}[$__rate_interval])) * 5)",
+          "exemplar": false,
+          "expr": "sum(rate(nginx_http_response_count_total{status=~\"3..\", instance=\"$node\"}[$__rate_interval])) ",
           "hide": false,
+          "instant": false,
           "interval": "",
           "legendFormat": "3xx",
           "refId": "B"
         },
         {
-          "expr": "ceil(sum(rate(nginx_http_response_count_total{status=~\"4..\", instance=\"$node\"}[$__rate_interval])) * 5)",
+          "exemplar": true,
+          "expr": "sum(rate(nginx_http_response_count_total{status=~\"4..\", instance=\"$node\"}[$__rate_interval]))",
           "hide": false,
+          "instant": false,
           "interval": "",
           "legendFormat": "4xx",
           "refId": "C"
         },
         {
-          "expr": "ceil(sum(rate(nginx_http_response_count_total{status=~\"5..\", instance=\"$node\"}[$__rate_interval])) * 5)",
+          "exemplar": true,
+          "expr": "sum(rate(nginx_http_response_count_total{status=~\"5..\", instance=\"$node\"}[$__rate_interval]))",
           "hide": false,
+          "instant": false,
           "interval": "",
           "legendFormat": "5xx",
           "refId": "D"
@@ -330,7 +345,7 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Status Code",
-      "type": "stat"
+      "type": "timeseries"
     },
     {
       "aliasColors": {},
@@ -338,26 +353,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -384,7 +379,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.0.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -443,7 +438,7 @@
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 26,
+  "schemaVersion": 30,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -454,6 +449,7 @@
           "text": "Prometheus",
           "value": "Prometheus"
         },
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": false,
@@ -472,11 +468,12 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "nginxlog-exporter",
-          "value": "nginxlog-exporter"
+          "text": "prometheus-nginxlog-exporter",
+          "value": "prometheus-nginxlog-exporter"
         },
         "datasource": "Prometheus",
         "definition": "label_values(nginx_parse_errors_total, job)",
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": false,
@@ -484,13 +481,15 @@
         "multi": false,
         "name": "job",
         "options": [],
-        "query": "label_values(nginx_parse_errors_total, job)",
+        "query": {
+          "query": "label_values(nginx_parse_errors_total, job)",
+          "refId": "Prometheus-job-Variable-Query"
+        },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -498,12 +497,13 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": "172.31.41.180:4040",
-          "value": "172.31.41.180:4040"
+          "selected": false,
+          "text": "prometheus-nginxlog-exporter:4040",
+          "value": "prometheus-nginxlog-exporter:4040"
         },
         "datasource": "Prometheus",
         "definition": "label_values(nginx_parse_errors_total{job=\"$job\"}, instance)",
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": false,
@@ -511,13 +511,15 @@
         "multi": false,
         "name": "node",
         "options": [],
-        "query": "label_values(nginx_parse_errors_total{job=\"$job\"}, instance)",
+        "query": {
+          "query": "label_values(nginx_parse_errors_total{job=\"$job\"}, instance)",
+          "refId": "Prometheus-node-Variable-Query"
+        },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -532,5 +534,5 @@
   "timezone": "",
   "title": "Monitoring HTTP Server - NGINX(nginxlog-exporter)",
   "uid": "mU7NJg8Gk",
-  "version": 26
+  "version": 1
 }
