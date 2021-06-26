@@ -7,12 +7,12 @@ rule_files:
   - 'rules/prometheus_nginx_log_exporter_rules.yml'
 
 # alert
-# alerting:
-#   alertmanagers:
-#   - scheme: http
-#     static_configs:
-#     - targets:
-#       - "alertmanager:9093"
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets:
+      - "alertmanager:9093"
 
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.

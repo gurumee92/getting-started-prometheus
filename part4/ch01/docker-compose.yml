@@ -34,7 +34,17 @@ services:
       - ./prometheus/rules/prometheus_nginx_log_exporter_rules.yml:/etc/prometheus/rules/prometheus_nginx_log_exporter_rules.yml
     ports:
       - 9090:9090
-  
+
+  alertmanager:
+    container_name: alertmanager
+    image: prom/alertmanager:latest
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - 9093:9093
+      
   grafana:
     container_name: grafana
     image: grafana/grafana:latest
