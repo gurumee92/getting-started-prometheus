@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1624685732066,
+  "iteration": 1624779418755,
   "links": [],
   "panels": [
     {
@@ -60,21 +60,24 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "ceil(sum(rate(nginx_http_response_count_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])) * 5)",
+          "exemplar": true,
+          "expr": "sum(rate(nginx_http_response_count_total[1m]))",
           "interval": "",
           "legendFormat": "rps trend",
           "queryType": "randomWalk",
           "refId": "A"
         },
         {
-          "expr": "ceil(sum(rate(nginx_http_response_count_total{instance=\"$node\",job=\"$job\"}[$__rate_interval] offset 1d)) * 5)",
+          "exemplar": true,
+          "expr": "sum(rate(nginx_http_response_count_total[1m] offset 1d))",
           "hide": false,
           "interval": "",
           "legendFormat": "rps past day",
           "refId": "B"
         },
         {
-          "expr": "ceil(sum(rate(nginx_http_response_count_total{instance=\"$node\",job=\"$job\"}[$__rate_interval] offset 1w)) * 5)",
+          "exemplar": true,
+          "expr": "sum(rate(nginx_http_response_count_total[1m] offset 1w))",
           "hide": false,
           "interval": "",
           "legendFormat": "rps past week",
@@ -164,28 +167,32 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(rate(nginx_http_response_count_total{status=~\"2..|3..\", instance=\"$node\"}[$__rate_interval])) / sum(rate(nginx_http_response_count_total{instance=\"$node\"}[$__rate_interval]))) * 100",
+          "exemplar": true,
+          "expr": "(sum(rate(nginx_http_response_count_total{status=~\"2..|3..\"}[1m])) / sum(rate(nginx_http_response_count_total[1m]))) * 100",
           "interval": "",
           "legendFormat": "success rate",
           "queryType": "randomWalk",
           "refId": "A"
         },
         {
-          "expr": "(sum(rate(nginx_http_response_count_total{status=~\"400|401|402|403|404\", instance=\"$node\",job=\"$job\"}[$__rate_interval])) / sum(rate(nginx_http_response_count_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]))) * 100",
+          "exemplar": true,
+          "expr": "(sum(rate(nginx_http_response_count_total{status=~\"400|401|402|403|404\"}[1m])) / sum(rate(nginx_http_response_count_total[1m]))) * 100",
           "hide": false,
           "interval": "",
           "legendFormat": "400-404 rate",
           "refId": "B"
         },
         {
-          "expr": "(sum(rate(nginx_http_response_count_total{status=~\"4..\", instance=\"$node\",job=\"$job\"}[$__rate_interval])) / sum(rate(nginx_http_response_count_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]))) * 100",
+          "exemplar": true,
+          "expr": "(sum(rate(nginx_http_response_count_total{status=~\"4..\"}[1m])) / sum(rate(nginx_http_response_count_total[1m]))) * 100",
           "hide": false,
           "interval": "",
           "legendFormat": "4xx rate",
           "refId": "C"
         },
         {
-          "expr": "(sum(rate(nginx_http_response_count_total{status=~\"5..\", instance=\"$node\",job=\"$job\"}[$__rate_interval])) / sum(rate(nginx_http_response_count_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]))) * 100",
+          "exemplar": true,
+          "expr": "(sum(rate(nginx_http_response_count_total{status=~\"5..\"}[1m])) / sum(rate(nginx_http_response_count_total[1m]))) * 100",
           "hide": false,
           "interval": "",
           "legendFormat": "5xx rate",
@@ -306,7 +313,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(rate(nginx_http_response_count_total{status=~\"2..\", instance=\"$node\"}[$__rate_interval]))",
+          "expr": "sum(rate(nginx_http_response_count_total{status=~\"2..\"}[1m]))",
           "hide": false,
           "instant": false,
           "interval": "",
@@ -316,7 +323,7 @@
         },
         {
           "exemplar": false,
-          "expr": "sum(rate(nginx_http_response_count_total{status=~\"3..\", instance=\"$node\"}[$__rate_interval])) ",
+          "expr": "sum(rate(nginx_http_response_count_total{status=~\"3..\"}[1m])) ",
           "hide": false,
           "instant": false,
           "interval": "",
@@ -325,7 +332,7 @@
         },
         {
           "exemplar": true,
-          "expr": "sum(rate(nginx_http_response_count_total{status=~\"4..\", instance=\"$node\"}[$__rate_interval]))",
+          "expr": "sum(rate(nginx_http_response_count_total{status=~\"4..\"}[1m]))",
           "hide": false,
           "instant": false,
           "interval": "",
@@ -334,7 +341,7 @@
         },
         {
           "exemplar": true,
-          "expr": "sum(rate(nginx_http_response_count_total{status=~\"5..\", instance=\"$node\"}[$__rate_interval]))",
+          "expr": "sum(rate(nginx_http_response_count_total{status=~\"5..\"}[1m]))",
           "hide": false,
           "instant": false,
           "interval": "",
@@ -389,7 +396,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (method, request_uri)(rate(nginx_http_response_time_seconds_hist_sum{instance=\"$node\"}[$__rate_interval])) \n/ \nsum by (method, request_uri)(rate(nginx_http_response_time_seconds_hist_count{instance=\"$node\"}[$__rate_interval]))",
+          "exemplar": true,
+          "expr": "sum by (method, request_uri)(rate(nginx_http_response_time_seconds_hist_sum[1m])) \n/ \nsum by (method, request_uri)(rate(nginx_http_response_time_seconds_hist_count[1m]))",
           "interval": "",
           "legendFormat": "{{method}}-{{request_uri}}",
           "refId": "A"
@@ -534,5 +542,5 @@
   "timezone": "",
   "title": "Monitoring HTTP Server - NGINX(nginxlog-exporter)",
   "uid": "mU7NJg8Gk",
-  "version": 1
+  "version": 2
 }
