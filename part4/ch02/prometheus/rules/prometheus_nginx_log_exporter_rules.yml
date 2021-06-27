@@ -1,0 +1,20 @@
+groups:
+- name: prometheus_nginxlog_exporter
+  rules:
+  - record: job:nginx_http_response_time_seconds:avg_1m
+    expr: |
+      sum by (method, request_uri)(rate(nginx_http_response_time_seconds_hist_sum[1m])) 
+      / 
+      sum by (method, request_uri)(rate(nginx_http_response_time_seconds_hist_count[1m]))
+  - record: status:nginx_http_response_count_total:2xx_1m
+    expr: sum(rate(nginx_http_response_count_total{status=~"2.."}[1m]))
+  - record: status:nginx_http_response_count_total:3xx_1m
+    expr: sum(rate(nginx_http_response_count_total{status=~"3.."}[1m]))
+  - record: status:nginx_http_response_count_total:success_1m
+    expr: sum(rate(nginx_http_response_count_total{status=~"2..|3.."}[1m]))
+  - record: status:nginx_http_response_count_total:4xx_1m
+    expr: sum(rate(nginx_http_response_count_total{status=~"4.."}[1m]))
+  - record: status:nginx_http_response_count_total:400_404_1m
+    expr: sum(rate(nginx_http_response_count_total{status=~"400|401|402|403|404"}[1m]))
+  - record: status:nginx_http_response_count_total:5xx_1m
+    expr: sum(rate(nginx_http_response_count_total{status=~"5.."}[1m]))
