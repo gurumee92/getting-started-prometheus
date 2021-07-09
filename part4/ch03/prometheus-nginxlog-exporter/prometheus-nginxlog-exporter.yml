@@ -1,0 +1,20 @@
+listen:
+  port: 4040
+  metrics_endpoint: "/metrics"
+
+consul:
+  enable: false
+
+namespaces:
+  - name: nginx
+    format: "$remote_addr - $remote_user [$time_local] \"$request\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\" \"$request_time\""
+    source:
+      files:
+        - /var/log/nginx/access.log
+    only_count: true
+    relabel_configs:
+    - target_label: request_uri
+      from: request
+      split: 2
+      separator: ' '  
+  
