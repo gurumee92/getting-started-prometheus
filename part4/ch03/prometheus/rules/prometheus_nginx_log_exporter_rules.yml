@@ -40,7 +40,7 @@ groups:
     annotations:
       summary: 'Request URI "/" Fail Rate Greater Than 30%'  
   
-  - alert: SuperErrorAtErrPage
+  - alert: SuperErrorAtIndexPage
     expr: |
       (status:nginx_http_response_count_total:4xx_1m > 5) 
         and ignoring(method, request_uri) 

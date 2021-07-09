@@ -31,7 +31,7 @@ groups:
     expr: job:nginx_http_response_count_total:fail_rate_1m{request_uri="/"} > 0.3
     for: 1m
   
-  - alert: SuperErrorAtErrPage
+  - alert: SuperErrorAtIndexPage
     expr: |
       (status:nginx_http_response_count_total:4xx_1m > 5) 
         and 

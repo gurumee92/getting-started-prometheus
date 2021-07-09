@@ -38,7 +38,7 @@ services:
       - '--web.console.templates=/usr/share/prometheus/consoles'
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus/rules/prometheus_nginx_log_exporter_rules.yml:/etc/prometheus/rules/prometheus_nginx_log_exporter_rules.yml
+      - ./prometheus/rules/prometheus_nginx_log_exporter_rules_backup.yml:/etc/prometheus/rules/prometheus_nginx_log_exporter_rules.yml
     ports:
       - 9090:9090
 
