@@ -1,0 +1,54 @@
+version: "3"
+
+services:
+  prometheus-fe:
+    container_name: prometheus-fe
+    image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    volumes:
+      - ./prometheus_fe/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+  node-fe1:
+    container_name: node-fe1
+    image: prom/node-exporter
+  node-fe2:
+    container_name: node-fe2
+    image: prom/node-exporter
+    
+  prometheus-be:
+    container_name: prometheus-be
+    image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    volumes:
+      - ./prometheus_be/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9091:9090
+
+  node-be1:
+    container_name: node-be1
+    image: prom/node-exporter
+  node-be2:
+    container_name: node-be2
+    image: prom/node-exporter
+  node-be3:
+    container_name: node-be3
+    image: prom/node-exporter
+
+  alertmanager:
+    container_name: alertmanager
+    image: prom/alertmanager:latest
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    # volumes:
+      # - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - 9093:9093
