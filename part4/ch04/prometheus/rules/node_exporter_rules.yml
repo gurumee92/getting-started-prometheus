@@ -1,0 +1,12 @@
+groups:
+- name: node_exporter
+  rules:
+  - record: job:up:avg
+    expr: avg without(instance)(up{job="node-exporter"})
+  - alert: ManyInstanceDown
+    expr: job:up:avg{job="node-exporter"} < 0.5
+    for: 15s
+    labels:
+      severity: 'critical'
+    annotations:
+      summary: 'Many Instance Down(Alive 50% Below)'  

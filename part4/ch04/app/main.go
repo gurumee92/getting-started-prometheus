@@ -24,7 +24,7 @@ func Index(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, "Error json deserialize request body", http.StatusInternalServerError)
 		}
 
-		log.Printf("body : %v", data)
+		log.Printf("body : %v", data["alerts"])
 		fmt.Fprintf(w, "POST %v", data)
 	} else {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)

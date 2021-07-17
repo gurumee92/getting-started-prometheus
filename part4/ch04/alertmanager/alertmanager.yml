@@ -1,5 +1,5 @@
 global:
-  # slack_api_url: '<slack_config>'
+  # slack_api_url: '' # <전역 설정>
 
 route:
   receiver: 'webhook'
@@ -11,3 +11,11 @@ receivers:
   - name: 'webhook'
     webhook_configs:
       - url: http://app:8080/
+
+  - name: 'slack'
+    slack_configs:
+    - channel: '#_monitoring'
+      api_url: '' # 리시버 개별 설정
+      send_resolved: true 
+      title: "{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}"
+      text: "{{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}"
