@@ -52,10 +52,3 @@ services:
       # - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
     ports:
       - 9093:9093
-  
-  app:
-    container_name: app
-    image: app
-    build: ./app
-    ports:
-      - "8080:8080"

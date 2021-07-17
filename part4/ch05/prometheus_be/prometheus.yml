@@ -4,7 +4,7 @@ global:
   evaluation_interval: 15s # By default, scrape targets every 15 seconds.
   external_labels:
     env: test
-    team: fe
+    team: be
 
 rule_files:
   # - 'rules/prometheus_nginx_log_exporter_rules.yml'
@@ -30,5 +30,5 @@ scrape_configs:
     scrape_interval: 5s
 
     static_configs:
-      - targets: ['node-fe1:9100', 'node-fe2:9100']
+      - targets: ['node-be1:9100', 'node-be2:9100', 'node-be3:9100']
   
