@@ -1,0 +1,14 @@
+global:
+
+route:
+  receiver: 'webhook'
+  repeat_interval: 2m
+  group_interval: 10s
+  group_wait: 5s
+
+receivers:  
+  - name: 'webhook'
+    webhook_configs:
+      - url: http://app:8080/
+
+  

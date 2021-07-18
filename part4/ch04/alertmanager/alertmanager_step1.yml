@@ -1,0 +1,22 @@
+global:
+
+route:
+  receiver: 'slack'
+  repeat_interval: 2m
+  group_interval: 10s
+  group_wait: 5s
+
+receivers:
+  - name: 'slack'
+    slack_configs:
+    - channel: '<YOUR_SLACK_CHANNEL>'
+      api_url: '<YOUR_SLACK_WEBHOOK_URL>'
+      send_resolved: true 
+      title: "{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}"
+      text: "{{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}"
+  
+  - name: 'webhook'
+    webhook_configs:
+      - url: http://app:8080/
+
+  
