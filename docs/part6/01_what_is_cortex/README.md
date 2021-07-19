@@ -22,8 +22,6 @@
 
 ## Cortex란 무엇인가?
 
-![01](./01.png)
-
 `Cortex`는 `CNCF`의 인큐베이션 프로젝트 중 하나로, `Weave Cloud`와 `Grafana Labs`가 관리하는 `Prometheus` 기반 오픈 소스 솔루션이다. `Cortex` 공식 문서에 따르면, 자신을 이렇게 소개하고 있다.
 
 >  "Cortex provides horizontally scalable, highly available, multi-tenant, long term storage for Prometheus."
@@ -51,7 +49,7 @@
 
 다음은 공식 문서를 기반으로 작성한 `Cortex` 아키텍처의 구성도이다.
 
-![02](./02.png)
+![01](./01.png)
 
 위의 관계도를 보면 `Cortex`에서 `Prometheus`는 일종의 중개자 역할이 된다. 각 `Exporter` 및 `Push Gateway`에서 수집된 메트릭들을 `Cortex`로 넘기는 역할을 수행한다. 이 때 `Cortex`는 클러스터 내에서, 역할에 따라 다음과 같이 분류될 수 있다.
 
