@@ -6,7 +6,7 @@
 ## 목차
 
 * 1부 Prometheus 맛보기
-  * [01장. Prometheus란 무엇인가]()
+  * [01장. Prometheus란 무엇인가](./docs/part1/01_what_is_prometheus/README.md)
   * [02장. 만들면서 배우는 Prometheus (1) metric, job, instance]()
   * [03장. 만들면서 배우는 Prometheus (2) metric type]()
   * [04장. 만들면서 배우는 Prometheus (3) label]()
