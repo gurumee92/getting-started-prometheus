@@ -1,24 +1,30 @@
 # Cortex란 무엇인가
 
-## Prometheus의 문제점?
+![logo](../../logo.png)
 
-이번 장에서는 `Cortex`가 무엇인지 공부한다. "갑자기 생뚱맞게 `Prometheus` 공부하다가 무슨 `Cortex`야?" 라는 의문이 생길 수도 있다. `Prometheus`는 최근 나온 모니터링 기술 중 `InfluxDB`와 함께 업계 표준으로 자리 잡았다. 하지만 운영하면서 몇 가지 아쉬운 점이 발견되었다. 대표적으로는 다음의 문제점이 존재한다.
+## 개요
+
+이번 장에서는 `Cortex`가 무엇인지 공부한다. "갑자기 생뚱맞게 `Prometheus` 공부하다가 무슨 `Cortex`야?" 라는 의문이 생길 수도 있다. `Prometheus`는 뛰어난 성능과, 쉬운 접근성을 바탕으로 최근 나온 모니터링 기술 중 `InfluxDB`와 함께 업계 표준으로 자리 잡았다. 하지만 다음과 같은 문제점이 존재한다.
 
 1. Prometheus는 scale-out 구조를 고려하지 않고 설계되었다.
 2. Prometheus에서 긴 시간 범위를 지닌 데이터를 쿼리할 때 성능이 매우 저하되었다.
 3. Prometheus가 저장하는 데이터 특성 상 오랜 시간 저장하는 것이 쉽지 않다.
 
-이를 해결하는 기술 중 하나가 바로 `Grafana Labs`가 관리하고 있는 `Cortex`이다. 이제부터 이를 알아보도록 하자. 
+위 문제점들을 해결하기 위한 대표적인 솔루션이 바로 `Cortex`이다. 단점이라면 백엔드 구성을 S3, GCS 등으로 구성해야 하기 때문에 오픈 소스 솔루션 치고 비싸다라는 점이 있긴 하지만 대규모 시스템을 모니터링 하기 위해서 `Prometheus`를 운영하고 있는 곳이라면, 한 번쯤 고려해볼만 하다.   
 
 > 참고! Loki에 대해서
 >
-> 현재 업계에서 뜨고 있는 기술 중 하나인 "Loki"는 "Grafana Labs"가 만든 오픈 소스 로그 모니터링 시스템입니다. 이는 "Cortex"를 벤치마킹하여 만들었는데, 서로의 구조가 매우 유사합니다. 그래서 둘 중 하나를 배워두면 다른 하나를 배우는데 큰 도움이 될 것입니다.
+> 현재 업계에서 뜨고 있는 기술 중 하나인 "Loki"는 "Grafana Labs"가 만든 오픈 소스 로그 모니터링 시스템입니다. 이는 "Cortex"를 래핑하여 로그 메세지를 수집 및 쿼리할 수 있게 만들었기 떄문에, 서로의 구조가 매우 유사합니다. 그래서 둘 중 하나를 배워두면 다른 하나를 배우는데 큰 도움이 될 것입니다.
+
+> 참고! Thanos에 대해서
+>
+> "Cortex"와 더불어서 "Prometheus" HA 솔루션으로 거론되는 것이 바로 "Thanos"입니다. "Thanos"는 "Cortex"에 비해 저렴하게 운영할 수 있으나, 쿼리 성능은 다소 낮습니다. (작게는 2배 크게는 10배 정도) 둘 다 훌륭한 솔루션이며 서로 보완적인 관계에 있으므로 같이 알아두면 큰 도움이 될 것입니다. 
 
 ## Cortex란 무엇인가?
 
 ![01](./01.png)
 
-`Cortex`는 `CNCF`의 인큐베이션 프로젝트 중 하나로, `Weave Cloud`와 `Grafana Labs`가 관리하는 `Prometheus` 기반 오픈소스이다. `Cortex` 공식 문서에 따르면, 자신을 이렇게 소개하고 있다.
+`Cortex`는 `CNCF`의 인큐베이션 프로젝트 중 하나로, `Weave Cloud`와 `Grafana Labs`가 관리하는 `Prometheus` 기반 오픈 소스 솔루션이다. `Cortex` 공식 문서에 따르면, 자신을 이렇게 소개하고 있다.
 
 >  "Cortex provides horizontally scalable, highly available, multi-tenant, long term storage for Prometheus."
 
@@ -43,21 +49,24 @@
 
 ## Cortex 아키텍처
 
-다음은 공식 문서에서 가져온 `Cortex` 아키텍처의 구성도이다.
+다음은 공식 문서를 기반으로 작성한 `Cortex` 아키텍처의 구성도이다.
 
 ![02](./02.png)
 
-위의 관계도를 보면 `Cortex`에서 `Prometheus`는 일종의 중개자 역할이 된다. 각 Exporter 및 Push Gateway에서 수집된 메트릭들을 `Cortex`로 넘기는 역할을 수행한다. 이 때 `Cortex`는 클러스터 내에서, 역할에 따라 다음과 같이 분류될 수 있다.
+위의 관계도를 보면 `Cortex`에서 `Prometheus`는 일종의 중개자 역할이 된다. 각 `Exporter` 및 `Push Gateway`에서 수집된 메트릭들을 `Cortex`로 넘기는 역할을 수행한다. 이 때 `Cortex`는 클러스터 내에서, 역할에 따라 다음과 같이 분류될 수 있다.
 
 * Distributor
 * Ingester
+* Store Gateway
+* Compactor
 * Querier
 * Query Frontend
 * Ruler
+* Alertmanager
 
 ### Distributor
 
-`Prometheus`가 전송한 데이터를 처리하는 역할을 한다. 전송된 데이터의 유효성을 체크한 후, 문제가 없으면 `Ingester`로 병렬적으로 데이터를 전송한다. 이 때 데이터를 전송할 `Ingester`를 선택할 때 구성된 Hash Ring을 통해서 해싱하여 선택한다. 이 때 해싱할 때 데이터의 내부 속성을 이용해서 해싱하게 된다. 이용할 수 있는 내부 속성의 조합은 다음과 같다.
+`Prometheus`가 전송한 데이터를 처리하는 역할을 한다. 전송된 데이터의 유효성을 체크한 후, 문제가 없으면 `Ingester`로 병렬적으로 데이터를 전송한다. 이 때 데이터를 전송할 `Ingester`를 선택할 때 구성된 "Hash Ring"을 통해서 해싱하여 선택한다. 이 때 해싱할 때 데이터의 내부 속성을 이용해서 해싱하게 된다. 이용할 수 있는 내부 속성의 조합은 다음과 같다.
 
 * 메트릭 이름 + 테넌트 ID (기본)
 * 메트릭 이름 + 라벨 + 테넌트 ID
@@ -74,34 +83,44 @@
 
 `Ingester`는 `Distributor`로 전달 받은 데이터들을 `Storage`에 넘겨주는 역할을 한다. `Cortex`가 지원하고 있는 데이터 저장 방법은 크게 2가지이다.
 
-* Chunk
-* Block
+* Chunks Storage (Deprecated)
+* Blocks Storage
 
-Chunk 방식이 기본이며, 수신된 데이터를 Index/Chunk를 나누어서 저장한다. 가능한 데이터 저장소로는 `AWS DynamoDB/S3`, `GCP BigTable/GCS`, `Cassandra/Cassandra` 가 있다. 
+`Chunks Storage` 방식이 기본이며, 수신된 데이터를 Index/Chunk를 나누어서 저장한다. 가능한 데이터 저장소로는 `AWS DynamoDB/S3`, `GCP BigTable/GCS`, `Cassandra/Cassandra` 가 있다. 하지만 v1.9 이후부터는 deprecated 되었다. 
 
-또한 Block 방식은 `Prometheus TSDB`와 유사한 방식으로 데이터를 저장하는 방법이며, `AWS S3`, `GCP GCS` 등을 저장소로 사용할 수 있다.
+`Blocks Storage` 방식은 `Prometheus TSDB`와 유사한 방식으로 데이터를 저장하는 방법이며, `AWS S3`, `GCP GCS` 등을 저장소로 사용할 수 있다.
 
-또한, 앞서 언급했던 것처럼 `Ingester` 들은 각각 토큰과 함께 "Hash Ring"에 구성되는데 KV Store가 필요하다. 이를 지원하는 KV Store는 다음과 같다.
+또한, 앞서 언급했던 것처럼 `Ingester` 들은 각각 토큰과 함께 "Hash Ring"에 구성되는데 "KV Store"가 필요하다. 이를 지원하는 KV Store는 다음과 같다.
 
 * Consul
 * Etcd
 * Gossip Memberlist
 
+### Store Gateway
+
+`Store Gateway`는 "Blocks"으로부터 시계열을 쿼리하는 서비스이다. `Store Gateway`는 "Blocks Storage" 저장 방식으로 `Cortex` 클러스터를 구성할 때 필수적인 컴포넌트이다. `Store Gateway`는 "semi-stateful"하다. 
+
+### Compactor
+
+`Compactor`는 다음 작업을 수행한다.
+
+* 지정된 테넌트의 여러 "Block"을 최적화된 하나의 큰 "Block"으로 압축하는 역할을 한다. 이를 통해서 스토리지 비용을 절감하고 쿼리 속도를 높인다.
+* 테넌트 별 버킷 인덱스를 업데이트 상태로 유지한다. 버킷 인덱스는 `Querier`, `Store Gateway`, `Ruler`가 새 "Block"을 검색하는데 사용된다.
+
+`Compactor`는 "stateless"하다.
+
 ### Querier
 
-`Querier`는 이름 그대로 `Cortex` 클러스터의 `Ingester`와 `Storage`에 저장된 데이터를 `PromQL`로 쿼리하는 역할을 한다. 복제본으로 인해 중복되는 데이터가 있다면, 내부적으로 이를 제거해서 쿼리 결과로 보여준다.
+`Querier`는 이름 그대로 `Cortex` 클러스터의 `Ingester`, `Store Gateway` 그리고 캐시 저장소에 저장된 데이터를 `PromQL`로 쿼리하는 역할을 한다. 복제본으로 인해 중복되는 데이터가 있다면, 내부적으로 이를 제거해서 쿼리 결과로 보여준다.
 
 ### Query Frontend
 
-`Query Frontend`는 선택적인 역할로, `Querier`의 쿼리 속도를 높이는데 사용된다. 내부적으로 쿼리 조정을 수행하고 내부 큐의 쿼리들을 보관한다. 만약 `Query Frontend` 역할을 하는 `Cortex`가 있다면, `Querier`들은 이 내부 큐의 작업들을 가져와서 실행한 후 반환하는 작업자들이 된다.
-
-`redis`, `memcache` 등을 데이터베이스로써 사용할 수 있으며, 보통 로드 밸런싱하는 게이트웨이, 구성도로 보면 `NGINX`와 같이 구성되서 사용된다. 
+`Query Frontend`는 선택적인 역할로, `Querier`의 쿼리 속도를 높이는데 사용된다. 내부적으로 쿼리 조정을 수행하고 내부 큐의 쿼리들을 보관한다. 만약 `Query Frontend` 역할을 하는 `Cortex`가 있다면, `Querier`들은 이 내부 큐의 작업들을 가져와서 실행한 후 반환하는 작업자들이 된다. 또한 `Query Scheduler`를 따로 구성하면 내부 큐를 외부로 뺄 수 있다.
 
 ### Ruler
 
-`Ruler`는 선택적인 역할로써, 규칙과 알림을 기록하기 위해서 `PromQL` 쿼리들을 실행한다. 또한 각 테넌트에 대한 기록 규칙 및 경고를 저장하는 데이터베이스가 필요하다. 
+`Ruler`는 선택적인 역할로써, 규칙과 알림을 기록하기 위해서 `PromQL` 쿼리들을 실행한다. `Ingester`와 유사하게 "Hash Ring"으로 클러스터를 구성하며, `S3`, `GCS` 등의 장기 저장소에 `rule`들을 저장한다. `Ruler`는 "semi-stateful"하며, 병렬적으로 스케일할 수 있다. 
 
-`Ruler`는 semi-stateful하며, 병렬적으로 스케일할 수 있다. `Prometheus AlertManager` 기반으로 작성된 `Cortex AlertManager`를 통해서 기록된 알림들을 `Slack` 등의 외부 엔드포인트로 보내줄 수 있다.
+### Alertmanager
 
-
-
+`Alertmanager`는 선택적인 역할로,  `Prometheus AlertManager` 기반으로 작성되었다. `Ingester`와 유사하게 "Hash Ring"으로 클러스터를 구성하며 `Cortex Ruler`를 통해서 생성된 알람들을 `Slack` 등의 외부 엔드포인트로 전송하는 역할을 한다. `Alertmanager`는 "semi-stateful"하며, 병렬적으로 스케일할 수 있다.
