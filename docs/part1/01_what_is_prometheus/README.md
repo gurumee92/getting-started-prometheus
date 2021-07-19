@@ -1,4 +1,8 @@
-# 01장. 프로메테우스란 무엇인가
+# 프로메테우스란 무엇인가
+
+![logo](../../logo.png)
+
+## 개요
 
 ## 프로메테우스란 무엇인가
 
@@ -45,3 +49,119 @@
 * 이벤트 로그나 개별 이벤트를 저장하는 일
 * 이메일 주소/사용자 이름과 같이 카디널리티가 높은 데이터를 저장하는 일
 * 100%의 정확성이 요구되는 일
+
+## 프로메테우스 설치 (로컬)
+
+로컬에서는 도커 기반으로 설치한다. 터미널에 다음을 입력한다.
+
+```bash
+$ docker run -p 9090:9090 prom/prometheus
+```
+
+끝이다. "localhost:9090"에서 다음 UI를 확인할 수 있다.
+
+![Prometheus UI 접속 화면](./02.png)
+
+## 프로메테우스 설치 (서버)
+
+> 참고! 클라우드는 어떤 것을 선택해야 하나요?
+>
+> 현재 문서에서는 GCP 환경에서, 설치를 진행합니다. AWS, Azure 등 어떤 클라우드에서 진행해도 상관 없으며, RedHat 계열, CentOS 서버를 선택해야 합니다. 또한, Security Group, Firewall 등으로 9090번 포트에 대한 방화벽 해제가 필요합니다.
+
+먼저 `ssh`를 통해서 EC2에 접속해보자. 일단 여기서는 EC2 기준으로 설명을 한다. 다음 명령어들을 입력해서 프로메우스 설치 및 실행을 한다. 
+
+```bash
+# EC2 인스턴스 처음 접속했을 때 경로.
+$ pwd
+/home/sidelineowl
+ 
+# 설치하는 컴포넌트들의 관리를 더 쉽게 하기 위해서 디렉토리 생성
+$ mkdir apps
+
+# 디렉토리 이동
+$ cd apps
+ 
+# 프로메테우스 바이너리 파일이 들어 있는 압축 파일 설치
+# GCP의 경우는 wget 설치가 필요하다.
+$ wget https://github.com/prometheus/prometheus/releases/download/v2.22.0/prometheus-2.22.0.linux-amd64.tar.gz
+ 
+# 압축 파일 해제
+$ tar zxvf prometheus-2.22.0.linux-amd64.tar.gz
+
+# 압축 파일 삭제
+$ rm prometheus-2.22.0.linux-amd64.tar.gz
+ 
+# 프로메테우스 디렉토리 경로 간소화
+$ mv prometheus-2.22.0.linux-amd64 prometheus
+ 
+# 프로메테우스 디렉토리 이동
+$ cd prometheus
+ 
+# 프로메테우스 실행
+$ ./prometheus
+```
+
+이제 클라우드 인스턴스의 "public IP주소:9090"에 접속하면 역시 다음 UI를 확인할 수 있다.
+
+![Prometheus UI 접속 화면](./02.png)
+
+현재 상황에서의 문제점은, 접속하고 있는 터미널이 종료되면 프로메테우스 역시 같이 종료된다는 것이다. 이를 해결하기 위해 프로메테우스를 "리눅스 서비스"로 등록할 것이다. 먼저 터미널에 다음을 입력한다.
+
+```bash
+# 현재 위치 확인
+$ pwd
+/home/sidelineowl/apps/prometheus
+
+# 디렉토리 프로비저닝
+$ sudo useradd --no-create-home --shell /bin/false prometheus
+$ sudo mkdir /etc/prometheus
+$ sudo mkdir /var/lib/prometheus
+$ sudo cp ./prometheus /usr/local/bin/
+$ sudo cp ./promtool /usr/local/bin/
+$ sudo cp -r ./consoles /etc/prometheus
+$ sudo cp -r ./console_libraries /etc/prometheus
+
+# 유저:그룹 설정
+$ sudo chown prometheus:prometheus /etc/prometheus
+$ sudo chown prometheus:prometheus /var/lib/prometheus
+$ sudo chown prometheus:prometheus /usr/local/bin/prometheus
+$ sudo chown prometheus:prometheus /usr/local/bin/promtool
+$ sudo chown -R prometheus:prometheus /etc/prometheus/consoles
+$ sudo chown -R prometheus:prometheus /etc/prometheus/console_libraries
+
+# 서비스 파일 등록
+$ sudo tee /etc/systemd/system/prometheus.service << EOF
+[Unit]
+Description=Prometheus Server
+Wants=network-online.target
+After=network-online.target
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+ExecStart=/usr/local/bin/prometheus \
+    --config.file /etc/prometheus/prometheus.yml \
+    --storage.tsdb.path /var/lib/prometheus/ \
+    --web.console.templates=/etc/prometheus/consoles \
+    --web.console.libraries=/etc/prometheus/console_libraries
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# 서비스 데몬 리로딩
+$ sudo systemctl daemon-reload
+ 
+# prometheus 서비스 시작
+$ sudo systemctl start prometheus
+ 
+# prometheus 서비스 상태 확인
+$ sudo systemctl status prometheus
+● prometheus.service - Prometheus Server
+   Loaded: loaded (/etc/systemd/system/prometheus.service; disabled; vendor preset: disabled)
+   Active: active (running) since 수 2020-11-04 09:04:14 UTC; 4s ago
+...
+```
+
+이제 다시 인스턴스의 "public IP:9090"에 접속하면 역시 다음 UI를 확인할 수 있다.
+
+![Prometheus UI 접속 화면](./02.png)
