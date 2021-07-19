@@ -1,16 +1,21 @@
 # 구르미의 Prometheus
 
+![logi](./docs/logo.png)
+
+
+## 목차
+
 * 1부 Prometheus 맛보기
   * [01장. Prometheus란 무엇인가]()
-  * [02장. 만들면서 배우는 Prometheus (1) 처음 만드는 메트릭]()
-  * [03장. 만들면서 배우는 Prometheus (2) 메트릭 타입]()
-  * [04장. 만들면서 배우는 Prometheus (3) 레이블]()
-  * [05장. 만들면서 배우는 Prometheus (4) PromQL]()
+  * [02장. 만들면서 배우는 Prometheus (1) metric, job, instance]()
+  * [03장. 만들면서 배우는 Prometheus (2) metric type]()
+  * [04장. 만들면서 배우는 Prometheus (3) label]()
 * 2부 Prometheus와 Grafana로 대시보드 구축하기
-  * [06장. Grafana란 무엇인가]()
-  * [07장. 시스템 메트릭 모니터링하기 (1) node-exporter]()
-  * [08장. 시스템 메트릭 모니터링하기 (2) collectd-exporter]()
-  * [09장. 프로세스 포트 모니터링하기 blackbox-exporter]()
+  * [05장. Grafana란 무엇인가]()
+  * [06장. 시스템 메트릭 모니터링하기 (1) node-exporter]()
+  * [07장. 시스템 메트릭 모니터링하기 (2) collectd-exporter]()
+  * [08장. 프로세스 포트 모니터링하기 (1) blackbox-exporter]()
+  * [09장. 프로세스 포트 모니터링하기 (2) Pushgateway 활용]()
   * [10장. 서비스 메트릭 모니터링하기 (1) prometheus-nginxlog-exporter]()
   * [11장. 서비스 메트릭 모니터링하기 (2) grok-exporter]()
   * [12장. 웹 서버 모니터링하기 (1) nginx-prometheus-exporter]()
@@ -22,23 +27,25 @@
   * [18장. 데이터베이스 모니터링하기 (3) redis-exporter]()
 * 3부 Prometheus와 서비스 디스커버리
   * [19장. 외부 서비스 디스커버리 통합 (1) Consul]()
-  * [20장. 외부 서비스 디스커버리 통합 (2) Kubernetes]()
-  * [21장. 외부 서비스 디스커버리 통합 (3) AWS]()
-  * [22장. 외부 서비스 디스커버리 통합 (3) GCP]()
-* 4부 Prometheus와 알람
-  * [23장. 알람 파이프라인 구축하기]()
-  * [24장. 기록 규칙이란 무엇인가]()
-  * [25장. 알람 규칙이란 무엇인가]()
-  * [26장. Alertmanager란 무엇인가]()
-* 5부 Prometheus HA
-  * [27장. Cortex란 무엇인가]()
-  * [28장. Cortex 싱글 노드 클러스터 구성하기]()
-  * [29장. Crotex 멀티 노드 클러스터를 위한 준비 Consul, Memcache, S3]()
-  * [30장. Cortex 멀티 노드 클러스터 구성하기 (1) Querier]()
-  * [31장. Cortex 멀티 노드 클러스터 구성하기 (2) Query Frontend]()
-  * [32장. Cortex 멀티 노드 클러스터 구성하기 (3) Compactor]()
-  * [33장. Cortex 멀티 노드 클러스터 구성하기 (4) Store Gateway]()
-  * [34장. Cortex 멀티 노드 클러스터 구성하기 (5) Distributor]()
-  * [35장. Cortex 멀티 노드 클러스터 구성하기 (6) Ingester]()
-  * [36장. Cortex 멀티 노드 클러스터 구성하기 (7) Ruler]()
-  * [37장. Cortex 멀티 노드 클러스터 구성하기 (8) Alertmanager]()
+  * [20장. 외부 서비스 디스커버리 통합 (2) AWS]()
+  * [21장. 외부 서비스 디스커버리 통합 (3) GCP]()
+  * [22장. 외부 서비스 디스커버리 통합 (4) Kubernetes]()
+* 4부 Prometheus와 PromQL
+  * [23장. PromQL 기본]()
+  * [24장. PromQL 활용 (1) 집계와 서브쿼리]()
+  * [25장. PromQL 활용 (2) Recording Rule]()
+  * [26장. PromQL 활용 (3) Alerting Rule]()
+* 5부 Prometheus와 알람
+  * [27장. Alertmanager란 무엇인가]()
+  * [28장. Alertmanager 활용 (1) routing과 receiver]()
+  * [29장. Alertmanager 활용 (2) throttle, repeat, silence, inhibition]()
+  * [30장. 알람 파이프라인 구축하기 (1) Alertmanager]()
+  * [31장. 알람 파이프라인 구축하기 (2) Grafana]()
+* 6부 Prometheus와 HA
+  * [32장. Cortex란 무엇인가]()
+  * [33장. Cortex 싱글 노드 클러스터 구성하기]()
+  * [34장. Crotex 멀티 노드 클러스터를 위한 준비 Consul, Memcache, S3]()
+  * [35장. Cortex 멀티 노드 클러스터 구성하기 (1) Querier와 Query Frontend]()
+  * [36장. Cortex 멀티 노드 클러스터 구성하기 (2) Compactor와 Store Gateway]()
+  * [37장. Cortex 멀티 노드 클러스터 구성하기 (3) Distributor와 Ingester]()
+  * [38장. Cortex 멀티 노드 클러스터 구성하기 (4) Ruler와 Alertmanager]()
