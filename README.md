@@ -41,11 +41,3 @@
   * [29장. Alertmanager 활용 (2) throttle, repeat, silence, inhibition]()
   * [30장. 알람 파이프라인 구축하기 (1) Alertmanager]()
   * [31장. 알람 파이프라인 구축하기 (2) Grafana]()
-* 6부 Prometheus와 HA
-  * [32장. Cortex란 무엇인가](./docs/part6/01_what_is_cortex/README.md)
-  * [33장. Cortex 싱글 노드 클러스터 구성하기]()
-  * [34장. Crotex 멀티 노드 클러스터를 위한 준비 Consul, Memcache, S3]()
-  * [35장. Cortex 멀티 노드 클러스터 구성하기 (1) Querier와 Query Frontend]()
-  * [36장. Cortex 멀티 노드 클러스터 구성하기 (2) Compactor와 Store Gateway]()
-  * [37장. Cortex 멀티 노드 클러스터 구성하기 (3) Distributor와 Ingester]()
-  * [38장. Cortex 멀티 노드 클러스터 구성하기 (4) Ruler와 Alertmanager]()
