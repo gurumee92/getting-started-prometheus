@@ -1,6 +1,6 @@
 # 시스템 메트릭 모니터링하기 (1) node-exporter
 
-![log](../../logo.png)
+![logo](../../logo.png)
 
 ## 개요
 
