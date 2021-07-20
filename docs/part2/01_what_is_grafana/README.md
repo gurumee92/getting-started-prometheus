@@ -8,7 +8,7 @@
 
 이번 장의 코드는 다음 링크에서 확인할 수 있다.
 
-* 이번 장 코드 : []()
+* 이번 장 코드 : [https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch01](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch01)
 
 ## Grafana란 무엇인가
 
@@ -28,6 +28,7 @@ $ docker run --name=grafana -p 3000:3000 grafana/grafana
 
 끝이다. 이후 이어지는 절에서, `docker-compose`를 통해서 `Prometheus`와 `Grafana`를 다음과 같이 코드로 구성한다.
 
+[src/part2/ch01/docker-compose.yml](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch01/docker-compose.yml)
 ```yml
 version: "3"
 

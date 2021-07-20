@@ -11,7 +11,7 @@
   * [03장. 만들면서 배우는 Prometheus (2) metric type]()
   * [04장. 만들면서 배우는 Prometheus (3) label]()
 * 2부 Prometheus와 Grafana로 대시보드 구축하기
-  * [05장. Grafana란 무엇인가]()
+  * [05장. Grafana란 무엇인가](./docs/part2/01_what_is_grafana/README.md)
   * [06장. 시스템 메트릭 모니터링하기 (1) node-exporter]()
   * [07장. 시스템 메트릭 모니터링하기 (2) collectd-exporter]()
   * [08장. 프로세스 포트 모니터링하기 (1) blackbox-exporter]()
