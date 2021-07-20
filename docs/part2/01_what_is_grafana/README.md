@@ -1,6 +1,14 @@
-# Grafana 설치
+# Grafana란 무엇인가
 
-이 장에서는 `Grafana` 설치를 다룬다. 역시 로컬 환경, `AWS` 클라우드 환경에서의 설치를 다룬다.
+이 문서에서는 `Grafana`가 무엇인지에 대해서 대략적으로 살펴본다. 다음과 같은 내용을 다룬다.
+
+* Grafana란 무엇인가
+* Grafana 설치
+* Grafana - Prometheus 연동
+
+이번 장의 코드는 다음 링크에서 확인할 수 있다.
+
+* 이번 장 코드 : []()
 
 ## Grafana란 무엇인가
 
@@ -10,7 +18,7 @@
 
 기본적으로 `Prometheus`와 `Grafana`는 모두 `Grafana Labs`에서 관리하고 있기 때문에, 궁합이 어떤 데이터 소스와 비교하더라도 매우 좋은 편이다. 이것만으로 우리가 `Grafana`를 설치하는 이유는 충분하다.
 
-## 로컬에서 Grafana 설치
+## Grafana 설치 (로컬)
 
 먼저 로컬 환경에서 `Grafana`를 설치한다. 역시 `Docker` 기반으로 설치를 할 것이다. 터미널에 다음을 입력하면 바로 설치를 할 수 있다.
 
@@ -18,9 +26,8 @@
 $ docker run --name=grafana -p 3000:3000 grafana/grafana
 ```
 
-끝이다. 이후 이어지는 절에서, `Prometheus` 연동하는 방법을 알아보기 때문에, 로컬에서 진행할 사람들은 다음과 같이 `docker-compose.yml`을 만들어둔다.
+끝이다. 이후 이어지는 절에서, `docker-compose`를 통해서 `Prometheus`와 `Grafana`를 다음과 같이 코드로 구성한다.
 
-part1/ch03/docker-compose.yml
 ```yml
 version: "3"
 
@@ -31,7 +38,6 @@ services:
     ports:
       - 9090:9090
 
-  # dashboard & alert
   grafana:
     container_name: grafana
     image: grafana/grafana:latest
@@ -39,49 +45,54 @@ services:
       - "3000:3000"
 ```
 
-위 코드는 다음 링크에서 확인할 수 있다.
-
-* [https://github.com/gurumee92/gurumee-prometheus-code/blob/master/part1/ch03/docker-compose.yml](https://github.com/gurumee92/gurumee-prometheus-code/blob/master/part1/ch03/docker-compose.yml)
-
-로컬에서 `docker-compose`로 `Prometheus`와 `Grafana`를 조작하려면 터미널에 다음을 입력하면 된다.
+로컬에서 `docker-compose`로 구성되는 인프라스트럭를 관리하려면 터미널에 다음을 입력하면 된다.
 
 ```bash
 # 현재 위치
 $ pwd
 # docker-compose.yml이 있는 위치
-/Users/a1101320/Studies/gitbooks/gurumee-prometheus/code/part1/ch03
+/Users/gurumee/Workspace/gurumee-book-prometheus/src/part2/ch01
 
 # 컴포넌트 실행
-$ docker-compose up -d
-Creating network "ch03_default" with the default driver
-Creating prometheus ... done
-Creating grafana    ... done
+$  docker compose up -d
+[+] Running 2/2
+⠿ Container prometheus  Started                                                                                                                                                                                                   0.9s
+⠿ Container grafana     Started         
 
 # 컴포넌트 상태 확인
 $ docker ps
-CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS          PORTS                    NAMES
-c2203aaa4464   prom/prometheus:latest   "/bin/prometheus --c…"   14 seconds ago   Up 13 seconds   0.0.0.0:9090->9090/tcp   prometheus
-7fa2f3ecc913   grafana/grafana:latest   "/run.sh"                14 seconds ago   Up 13 seconds   0.0.0.0:3000->3000/tcp   grafana
+CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS          PORTS                                       NAMES
+3a0b00ceb302   e511606aee56             "/run.sh"                16 seconds ago   Up 15 seconds   0.0.0.0:3000->3000/tcp, :::3000->3000/tcp   grafana
+f3ba27ef35a8   9dfc442be98c             "/bin/prometheus --c…"   23 secons ago   Up 15 seconds   0.0.0.0:9090->9090/tcp, :::9090->9090/tcp   prometheus
 
 # 컴포넌트 중지
-$ docker-compose down -v
-Stopping prometheus ... done
-Stopping grafana    ... done
-Removing prometheus ... done
-Removing grafana    ... done
-Removing network ch03_default
+$ docker compose down -v
+[+] Running 3/3
+ ⠿ Container prometheus  Removed                                                                                                                                                                                                   0.3s
+ ⠿ Container grafana     Removed                                                                                                                                                                                                   0.2s
+ ⠿ Network ch01_default  Removed    
 ```
 
-## AWS에서 Grafana 설치
+## Grafana 설치 (서버)
 
-지난 장에서 `Prometheus`처럼 직접 바이너리 설치하는 것이 아닌 rpm 파일을 다운 받아 로컬 패키지 매니저에 설치 명령을 내리는 것으로 `Grafana`를 설치해보겠다. 쉽게 말해서, 조금 더 쉽게 `Grafana`를 설치하고 서비스로 등록한다. **프로메테우스를 설치한 AWS 인스턴스의 터미널에 접속한 후** `Grafana` 설치를 위해 다음을 입력한다.
+서버에서 `Grafana`는 다음과 같이 설치할 수 있다.
 
 ```bash
-# .rpm install
-$ wget https://dl.grafana.com/oss/release/grafana-7.3.6-1.x86_64.rpm
- 
-# rpm localinstall
-$ sudo yum localinstall grafana-7.3.7-1.x86_64.rpm
+# rpm install
+$ sudo tee /etc/yum.repos.d/grafa.repo <<EOF
+[grafana]
+name=grafana
+baseurl=https://packages.grafana.com/oss/rpm
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.grafana.com/gpg.key
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+EOF
+
+# grafana install
+$ sudo yum install grafana -y
 ```
 
 그럼 자동으로 `Grafana`가 설치되고 `grafana-server`라는 이름으로 서비스가 등록된다. 이제 터미널에 다음을 입력해서 `Grafana`를 실행하면 된다.
@@ -104,11 +115,7 @@ Docs: http://docs.grafana.org
 
 ## Prometheus와의 연동
 
-이제 `Prometheus`와 `Grafana`를 연동해 볼 것이다. 로컬 기준으로 자세하게 알아볼 것이다. 서버 작업은 모두 동일하고 URL만 잘 설정해주면 된다. 
-
-### 로컬에서 연동 
-
-먼저 로컬 환경이다. `docker-compose`로 `Grafana`와 `Prometheus`를 실행한다.
+이제 `Prometheus`와 `Grafana`를 연동해 볼 것이다. 로컬 기준으로 자세하게 알아볼 것이다. 서버 작업은 먼저 방화벽 정책으로 3000번 포트가 외부에 개방되어야 한다. 이 후 설정 파일에서 "IP:PORT"만 잘 지정해두면 된다. 이외에는 모두 동일하다. `docker-compose`로 `Grafana`와 `Prometheus`를 실행한다.
 
 ```bash
 # 현재 위치
@@ -174,21 +181,3 @@ $ docker-compose up -d
 그럼 아래 화면처럼 그래프와 테이블을 확인할 수 있다.
 
 ![11](./11.png)
-
-### 서버에서 연동
-
-만약 서버에서 직접 연동하는 경우는 `Grafana`와 `Prometheus` 서비스가 잘 실행되는지 확인하면 된다.
-
-```bash
-# 프로메테우스 상태 확인
-$ sudo systemctl status prometheus
-
-# 그라파나 상태 확인
-$ sudo systemctl status grafana-server
-● grafana-server.service - Grafana instance
-Loaded: loaded (/usr/lib/systemd/system/grafana-server.service; enabled; vendor preset: disabled)
-Active: active (running) since 목 2021-01-14 07:04:46 UTC; 3 days ago
-Docs: http://docs.grafana.org
-```
-
-이후 진행 작업은 로컬 환경과 같다. 다만 `Prometheus` URL은 이번 실습 그대로 했다면 "localhost:9090"으로 하면 된다. 만약 다른 서버에서 작업했다면, "해당 서버 주소:9090"으로 설정하면 된다. 같은 VPC 내라면, 별 다른 작업 없이 private_ip, port로 작업이 가능하겠지만, 다른 VPC라면, public_ip 할당과, port에 대한 방화벽 설정이 필요하다.

@@ -7,7 +7,6 @@ services:
     ports:
       - 9090:9090
 
-  # dashboard & alert
   grafana:
     container_name: grafana
     image: grafana/grafana:latest
