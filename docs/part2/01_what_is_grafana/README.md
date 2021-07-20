@@ -1,5 +1,7 @@
 # Grafana란 무엇인가
 
+## 개요
+
 이 문서에서는 `Grafana`가 무엇인지에 대해서 대략적으로 살펴본다. 다음과 같은 내용을 다룬다.
 
 * Grafana란 무엇인가
@@ -16,7 +18,7 @@
 
 물론 이전 장에서 잠깐 봤듯이 `Prometheus` 역시 자체적으로 UI를 제공하고 있다. 쿼리도 가능하고 심지어 여러 패널을 만들어서 대시보드 구성도 가능하다. 하지만, 그 기능이 너무나도 빈약해서 혹은 불편해서 보통 상용 환경에서는 `Grafana`와 함께 연동해서 사용하는 것이 일반적이다. `Grafana`는 여러 데이터 소스에 대한 대시보드 템플릿을 제공하기 때문에, `Prometheus` 등의 데이터 소스의 쿼리 방법을 잘 모른다 하더라도 기본적인 대시보드 구성이 가능하다.
 
-기본적으로 `Prometheus`와 `Grafana`는 모두 `Grafana Labs`에서 관리하고 있기 때문에, 궁합이 어떤 데이터 소스와 비교하더라도 매우 좋은 편이다. 이것만으로 우리가 `Grafana`를 설치하는 이유는 충분하다.
+기본적으로 `Prometheus`와 `Grafana`는 모두 `Grafana Labs`에서 관리하고 있기 때문에, 궁합이 어떤 데이터 소스와 비교하더라도 궁합이 매우 좋은 편이다. 이것만으로 우리가 `Grafana`를 설치하는 이유는 충분하다.
 
 ## Grafana 설치 (로컬)
 
@@ -46,7 +48,7 @@ services:
       - "3000:3000"
 ```
 
-로컬에서 `docker-compose`로 구성되는 인프라스트럭를 관리하려면 터미널에 다음을 입력하면 된다.
+로컬에서 `docker-compose`로 구성되는 인프라스트럭러처를 관리하려면 터미널에 다음을 입력하면 된다.
 
 ```bash
 # 현재 위치
@@ -110,22 +112,24 @@ Docs: http://docs.grafana.org
 ....
 ```
 
-> 참고!
+> 참고! 저는 Prometheus를 설치한 인스턴스 말고 다른 인스턴스에 Grafana를 설치하고 싶은데요?
 > 
 > 물론 Prometheus와 Grafana 각기 다른 서버에 설치해서 연동해도 됩니다. 다만 그에 따른 AWS 서버 설정이 필요하기 때문에 프로메테우스를 다루는 범위를 넘어간다고 생각합니다. 따라서 이에 대한 내용은 설명하지 않습니다. 이후에 진행되는 실습도 두 컴포넌트가 같은 서버에 설치되었다고 가정하고 진행할 것입니다. 실습을 따라하는 사람들은 최대한 같은 환경을 맞춰주시길 바랍니다.
 
-## Prometheus와의 연동
+## Grafana와 Prometheus 연동
 
 이제 `Prometheus`와 `Grafana`를 연동해 볼 것이다. 로컬 기준으로 자세하게 알아볼 것이다. 서버 작업은 먼저 방화벽 정책으로 3000번 포트가 외부에 개방되어야 한다. 이 후 설정 파일에서 "IP:PORT"만 잘 지정해두면 된다. 이외에는 모두 동일하다. `docker-compose`로 `Grafana`와 `Prometheus`를 실행한다.
 
 ```bash
 # 현재 위치
 $ pwd
-# docker-compose.yml이 있는 위치
-/Users/gurumee/gurumee-prometheus/code/part1/ch03
+/Users/gurumee/Workspace/gurumee-book-prometheus/src/part2/ch01
 
 # 컴포넌트 실행
-$ docker-compose up -d
+$  docker compose up -d
+[+] Running 2/2
+⠿ Container prometheus  Started                                                                                                                                                                                                   0.9s
+⠿ Container grafana     Started
 ```
 
 그 후 브라우저에서 "localhost:3000"을 접속한다. 그럼 다음 화면이 뜨느데, Email과 Password 입력란에 "admin"을 입력한다.
