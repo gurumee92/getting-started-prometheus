@@ -145,7 +145,7 @@ $ sudo systemctl status node_exporter
 ...
 ```
 
-그 후 새로운 터미널을 열어 다음 명령어를 입력해서 수집되는 데이터가 있는지 확인한다.
+그 후 터미널에서 다음 명령어를 입력하여 수집되는 데이터가 있는지 확인한다.
 
 ```bash
 $ curl localhost:9100/metrics
