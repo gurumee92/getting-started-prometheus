@@ -248,4 +248,4 @@ $ sudo systecmctl restart grafana-server
 * System Daemon
 * Node Exporter
 
-이는 대시보드에서 확인할 수 있으니 한 번 확인해보길 바란다. 각 패널마다 `edit`을 누르면, `Grafana`에서 `Prometheus`를 어떻게 쿼리하는지 살펴볼 수 있다. 눈에 익도록 한 번씩 살펴두는 것이 좋다. 지금은 이해가 안가더라도 이 쿼리로 이런 지표를 땡겨온다 정도만 알고 있으면 된다.
+이는 대시보드에서 확인할 수 있으니 한 번 확인해보길 바란다. 각 패널마다 `edit`을 누르면, `Grafana`에서 `Prometheus`를 어떻게 쿼리하는지 살펴볼 수 있다. 눈에 익도록 한 번씩 살펴두는 것이 좋다.
