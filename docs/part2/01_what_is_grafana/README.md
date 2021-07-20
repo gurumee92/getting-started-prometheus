@@ -8,7 +8,7 @@
 * Grafana 설치
 * Grafana - Prometheus 연동
 
-이번 장의 코드는 다음 링크에서 확인할 수 있다.
+이 문서에서 진행되는 실습 코드는 편의성을 위해 로컬 `Docker` 환경에서 진행되나, 실세 서버 환경에서도 거의 동일하게 적용할 수 있도록 작성되었다. 이번 장의 코드는 다음 링크에서 확인할 수 있다.
 
 * 이번 장 코드 : [https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch01](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch01)
 
