@@ -52,7 +52,7 @@ $ sudo yum install epel-release -y
 # CollectD 설치
 $ sudo yum install collectd -y
 
-# CollectD co모듈 설치
+# CollectD 모듈 설치
 $ sudo yum install collectd-* -y
 ```
 
@@ -109,7 +109,7 @@ $ wget https://github.com/prometheus/collectd_exporter/releases/download/v0.5.0/
 $ tar -xvf collectd_exporter-0.5.0.linux-amd64.tar.gz
 
 # 압축 파일 제거
-$ rm collectd_exporter-0.5.0.linux-amd64
+$ rm collectd_exporter-0.5.0.linux-amd64.tar.gz
 
 # 디렉토리 경로 수정
 $ mv collectd_exporter-0.5.0.linux-amd64 ~/apps/collectd_exporter
@@ -204,21 +204,55 @@ go_gc_duration_seconds{quantile="1"} 0
 
 [src/part2/ch03/collectd/collectd.conf](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch03/collectd/collectd.conf)
 ```conf
-# ...
+LoadPlugin network
+LoadPlugin users
+LoadPlugin entropy
+LoadPlugin load
+LoadPlugin memory
+LoadPlugin swap
+LoadPlugin uptime
 
-# 주석 해제 
+LoadPlugin syslog
+
+<Plugin syslog>
+    LogLevel info
+</Plugin>
+
+LoadPlugin cpu
+
+<Plugin cpu>
+  ReportByCpu true
+  ReportByState true
+  ValuesPercentage false
+  ReportNumCpu false
+  ReportGuestState false
+  SubtractGuestState true
+</Plugin>
+
+LoadPlugin interface
+
+<Plugin interface>
+    Interface "eth0"
+    IgnoreSelected false
+</Plugin>
+
+LoadPlugin df
+
+<Plugin df>
+    IgnoreSelected false
+    MountPoint "/"
+</Plugin>
+
 LoadPlugin write_http
 
-# 추가
 <Plugin write_http>
   <Node "collectd_exporter">
-    URL "http://localhost:9103/collectd-post"
+    <!-- 서버라면 "localhost:9103" 혹은 "127.0.0.1:9103" -->
+    URL "http://collectd-exporter:9103/collectd-post"
     Format "JSON"
     StoreRates false
   </Node>
 </Plugin>
-
-# ...
 ```
 
 그리고, `CollectD`와 `collectd-exporter`를 재기동한다. 터미널에 다음을 입력한다. 로컬에서는 (`docker compose down`, `docker compose up`만으로 충분하다.)
@@ -226,6 +260,7 @@ LoadPlugin write_http
 ```bash
 $ sudo systemctl restart collectd
 $ sudo systemctl restart collectd_exporter
+
 $ curl http://localhost:9103/metrics | grep "collectd"
 # HELP collectd_cpu_total Collectd exporter: 'cpu' Type: 'cpu' Dstype: 'api.Derive' Dsname: 'value'
 # TYPE collectd_cpu_total counter
@@ -237,7 +272,36 @@ collectd_cpu_total{cpu="0",instance="f31de5df3931",type="steal"} 0
 ...
 ```
 
-`collectd_*`로 시작하는 메트릭 이름이 수집되고 있다면 성공이다. 이제 `Prometheus`가 `collectd-exporter` 노출하고 있는 데이터들을 스크랩핑할 수 있게 설정 파일을 수정한다.
+`collectd_*`로 시작하는 메트릭 이름이 수집되고 있다면 성공이다. 이 때 만약, 아무리 기다랴도 메트릭이 수집이 안될 때가 있다. 이 떄는 터미널에 다음 명령어를 입력해보자.
+
+```bash
+$ sudo systemctl status collectd
+...
+Jul 21 11:05:59 gbp-02 collectd[145526]: write_http plugin: curl_easy_perform failed with status 7:
+Jul 21 11:05:59 gbp-02 collectd[145526]: Filter subsystem: Built-in target `write': Dispatching value to all write plugins failed with status>
+Jul 21 11:05:59 gbp-02 collectd[145526]: Filter subsystem: Built-in target `write': Some write plugin is back to normal operation. `write' s
+...
+```
+
+`centos 8`에서는 확인이 안되는데 `centos 7`에서는 해당 IP의 "Permission Denied"라는 에러가 나온다. 이는 `SELinux` 설정 문제인데, `/etc/selinux/config`를 다음과 같이 수정한다.
+
+/etc/selinux/config
+```bash
+# This file controls the state of SELinux on the system.
+# SELINUX= can take one of these three values:
+#     enforcing - SELinux security policy is enforced.
+#     permissive - SELinux prints warnings instead of enforcing.
+#     disabled - No SELinux policy is loaded.
+### SELINUX=enforcing를 수정 ####
+SELINUX=disabled
+# SELINUXTYPE= can take one of these three values:
+#     targeted - Targeted processes are protected,
+#     minimum - Modification of targeted policy. Only selected processes are protected.
+#     mls - Multi Level Security protection.
+SELINUXTYPE=targeted
+```
+
+이후 시스템을 재부팅한 후, 서비스를 다시 가동하면 해결된다. 이제 `Prometheus`가 `collectd-exporter` 노출하고 있는 데이터들을 스크랩핑할 수 있게 설정 파일을 수정한다.
 
 [src/part2/ch03/prometheus/prometheus.yml](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch03/prometheus/prometheus.yml)
 ```yml
@@ -260,7 +324,7 @@ $ sudo systemctl restart prometheus
 
 ![02](./02.png)
 
-이게 되면 `collectd-`로 시작되는 메트릭들이 잘 수집되고 있는지 한 번 확인해보자.
+이게 되면 `collectd-*`로 시작되는 메트릭들이 잘 수집되고 있는지 한 번 확인해보자.
 
 ![03](./03.png)
 
