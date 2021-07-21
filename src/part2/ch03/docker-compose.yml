@@ -13,12 +13,18 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
-  
-  node-exporter:
-    container_name: node-exporter
-    image: prom/node-exporter
+
+  collectd:
+    container_name: collectd
+    image: chimeradev/collectd:5.5.0-3
+    volumes:
+      - ./collectd/collectd.conf:/etc/collectd/collectd.conf
+
+  collectd-exporter:
+    container_name: collectd-exporter
+    image: prom/collectd-exporter
     ports:
-      - "9100:9100"
+      - "9103:9103"
 
   grafana:
     container_name: grafana

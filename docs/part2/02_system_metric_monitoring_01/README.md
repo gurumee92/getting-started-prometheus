@@ -127,7 +127,7 @@ WantedBy=multi-user.target
 EOF
 
 # 데몬 리로드
-# sudo systemctl daemon-reload
+$ sudo systemctl daemon-reload
 ```
 
 이후 터미널에 다음을 입력하면 `node-exporter`를 구동시킬 수 있다.
