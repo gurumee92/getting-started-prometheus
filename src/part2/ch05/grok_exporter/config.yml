@@ -5,7 +5,7 @@ input:
   path: /var/log/nginx/access.log
   readall: false
 grok:
-  patterns_dir: ./patterns
+  patterns_dir: /etc/grok_exporter/patterns
   additional_patterns:
   - 'TEXT [a-zA-Z ]*'
 metrics:

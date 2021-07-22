@@ -17,7 +17,9 @@ services:
       - 9144:9144
     volumes:
       - ./grok_exporter/config.yml:/etc/grok_exporter/config.yml
+      - ./grok_exporter/patterns:/etc/grok_exporter/patterns
       - ./nginx/logs:/var/log/nginx
+
 
   prometheus:
     container_name: prometheus

@@ -139,9 +139,8 @@ $ pwd
 /Users/gurumee/Workspace/gurumee-book-prometheus/src/part2/ch04
 
 $ docker compose up -d prometheus-nginxlog-exporter
-[+] Running 2/2
-⠿ Network ch04_default  Created                                                                                                                                                                                                   0.3s
-⠿ Container nginx       Started  
+[+] Running 1/0
+ ⠿ Container prometheus-nginxlog-exporter  Running                                                                                                                                                  0.0s
 ```
 
 서버 환경에서는 다음과 같이 설치 및 구동할 수 있다.
