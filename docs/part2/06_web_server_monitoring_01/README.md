@@ -1,12 +1,23 @@
 # 웹 서버 모니링하기 (1) nginx-prometheus-exporter
 
-지난 장에서는 `nginxlog-exporter`를 `Prometheus`와 `Grafana`에 연동하여, `nginx`가 생성해내는 로그를 기반으로 메트릭을 수집하고, 수집된 메트릭을 통해서 요청 성공률 및 RPS, 응답 시간 등의 데이터를 보여주는 대시보드를 구축했었다.
+![logo](../../logo.png)
 
-이 대시보드로도 충분하지만, `nginx`의 Connection 정보가 필요할 수가 있다. 이번에는 `nginx-prometheus-exporter`를 통해서 메트릭을 수집하고 대시보드를 구축한다. 
+## 개요
 
-> 참고! 
-> 
-> 이번 장은 지난 장을 진행했다고 가정합니다. 진행하지 않았다면 [지난 장](../07_nginx_server_monitoring_01/07_nginx_server_monitoring_01.md)부터 먼저 진행하고 이 문서의 실습을 진행하시길 바랍니다.
+이 문서에서는 `nginx-prometheus-exporter`를 이용해서 `Nginx`의 커넥션 정보에 대한 메트릭을 수집한다. 그 후 `Grafana`, `Prometheus`를 이용해서 `Nginx` 웹 서버를 모니터링할 수 있는 대시보드를 구축하는 것에 대하여 다룬다. 자세한 내용은 다음과 같다.
+
+* Nginx와 설치
+* nginx-prometheus-exporter와 설치
+* 메트릭 수집을 위한 각 컴포넌트 설정
+* NGINX 서버 모니터링을 위한 Grafana 대시보드 구축
+
+이 문서에서 진행되는 실습 코드는 편의성을 위해 로컬 `Docker` 환경에서 진행되나, 실세 서버 환경에서도 거의 동일하게 적용할 수 있도록 작성되었다. 이번 장의 코드는 다음 링크에서 확인할 수 있다.
+
+* 이번 장 코드 : [https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch06](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch06)
+
+이 문서에서 구성하는 인프라스트럭처는 다음과 같다.
+
+![01](./01.png)
 
 ## nginx-prometheus-exporter란 무엇인가
 
