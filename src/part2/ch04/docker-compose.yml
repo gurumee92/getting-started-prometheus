@@ -8,18 +8,18 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./config/nginx.conf:/etc/nginx/nginx.conf
-      - ./logs:/var/log/nginx
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/logs:/var/log/nginx
   
-  nginxlog-exporter:
-    container_name: nginxlog-exporter
+  prometheus-nginxlog-exporter:
+    container_name: prometheus-nginxlog-exporter
     image: quay.io/martinhelmich/prometheus-nginxlog-exporter
     ports:
       - 4040:4040
     volumes:
-      - ./config/prometheus-nginxlog-exporter.yml:/etc/prometheus-nginxlog-exporter.yml
-      - ./logs:/var/log/nginx
-    command: -config-file /etc/prometheus-nginxlog-exporter.yml
+      - ./prometheus-nginxlog-exporter/prometheus-nginxlog-exporter.yml:/etc/prometheus-nginxlog-exporter.yml
+      - ./nginx/logs:/var/log/nginx
+    command: '-config-file /etc/prometheus-nginxlog-exporter.yml'
 
   prometheus:
     container_name: prometheus
@@ -30,7 +30,7 @@ services:
       - '--web.console.libraries=/usr/share/prometheus/console_libraries'
       - '--web.console.templates=/usr/share/prometheus/consoles'
     volumes:
-      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
   
@@ -40,9 +40,9 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./config/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
-      - ./config/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
-      - ./config/dashboard.json:/var/lib/grafana/dashboards/dashboard.json
+      - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./grafana/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
+      - ./grafana/dashboard.json:/var/lib/grafana/dashboards/dashboard.json
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
