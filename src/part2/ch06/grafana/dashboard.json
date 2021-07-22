@@ -16,12 +16,16 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1615364744445,
+  "iteration": 1626940133375,
   "links": [],
   "panels": [
     {
       "collapsed": false,
       "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -35,31 +39,46 @@
     },
     {
       "cacheTimeout": null,
-      "colorBackground": true,
-      "colorPostfix": false,
-      "colorPrefix": false,
-      "colorValue": false,
-      "colors": [
-        "#E02F44",
-        "#FF9830",
-        "#299c46"
-      ],
       "datasource": "Prometheus",
-      "decimals": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "text": "Down"
+                },
+                "1": {
+                  "text": "Up"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#E02F44",
+                "value": null
+              },
+              {
+                "color": "#FF9830",
+                "value": 1
+              },
+              {
+                "color": "#299c46",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none"
         },
         "overrides": []
-      },
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
       },
       "gridPos": {
         "h": 3,
@@ -70,47 +89,25 @@
       "id": 8,
       "interval": null,
       "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
       "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.0.6",
       "repeat": "instance",
       "repeatDirection": "h",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "nginx-prometheus-exporter:9113",
-          "value": "nginx-prometheus-exporter:9113"
-        }
-      },
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false
-      },
-      "tableColumn": "",
       "targets": [
         {
           "expr": "nginx_up{instance=~\"$instance\"}",
@@ -120,29 +117,18 @@
           "refId": "A"
         }
       ],
-      "thresholds": "1,1",
       "timeFrom": null,
       "timeShift": null,
       "title": "NGINX Status for $instance",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "Down",
-          "value": "0"
-        },
-        {
-          "op": "=",
-          "text": "Up",
-          "value": "1"
-        }
-      ],
-      "valueName": "current"
+      "type": "stat"
     },
     {
       "collapsed": false,
       "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -162,12 +148,6 @@
       "datasource": "Prometheus",
       "decimals": null,
       "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -198,7 +178,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.3",
+      "pluginVersion": "8.0.6",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -208,7 +188,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(nginx_connections_accepted{instance=~\"$instance\"}[5m]))",
+          "exemplar": true,
+          "expr": "sum(rate(nginx_connections_accepted{instance=~\"$instance\"}[1m]))",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -217,7 +198,8 @@
           "refId": "A"
         },
         {
-          "expr": "sum(irate(nginx_connections_handled{instance=~\"$instance\"}[5m]))",
+          "exemplar": true,
+          "expr": "sum(rate(nginx_connections_handled{instance=~\"$instance\"}[1m]))",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -275,12 +257,6 @@
       "dashes": false,
       "datasource": "Prometheus",
       "decimals": 0,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -310,7 +286,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.3",
+      "pluginVersion": "8.0.6",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -328,6 +304,7 @@
           "refId": "A"
         },
         {
+          "exemplar": true,
           "expr": "sum(nginx_connections_reading{instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
@@ -400,12 +377,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -433,7 +404,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.3",
+      "pluginVersion": "8.0.6",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -443,7 +414,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(nginx_http_requests_total{instance=~\"$instance\"}[5m]) * 5)",
+          "exemplar": true,
+          "expr": "sum(rate(nginx_http_requests_total{instance=~\"$instance\"}[1m]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -494,7 +466,7 @@
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 27,
+  "schemaVersion": 30,
   "style": "dark",
   "tags": [
     "nginx",
@@ -553,7 +525,6 @@
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false

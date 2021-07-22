@@ -1,4 +1,4 @@
-# 08장. NGINX 서버 모니링하기 (2) nginx-prometheus-exporter
+# 웹 서버 모니링하기 (1) nginx-prometheus-exporter
 
 지난 장에서는 `nginxlog-exporter`를 `Prometheus`와 `Grafana`에 연동하여, `nginx`가 생성해내는 로그를 기반으로 메트릭을 수집하고, 수집된 메트릭을 통해서 요청 성공률 및 RPS, 응답 시간 등의 데이터를 보여주는 대시보드를 구축했었다.
 
