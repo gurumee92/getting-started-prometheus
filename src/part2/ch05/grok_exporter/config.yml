@@ -1,0 +1,33 @@
+global:
+  config_version: 2
+input:
+  type: file
+  path: /var/log/nginx/access.log
+  readall: false
+grok:
+  patterns_dir: ./patterns
+  additional_patterns:
+  - 'TEXT [a-zA-Z ]*'
+metrics:
+  - type: counter
+    name: grok_http_response_count_total
+    help: Amount of processed HTTP requests
+    match: '%{IPORHOST:clientip} (?:-|(%{WORD}.%{WORD})) %{USER:ident} \[%{HTTPDATE:timestamp}\] \"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})\" %{NUMBER:response} (?:%{NUMBER:bytes}|-) %{QS:referrer} %{QS:agent} \"%{NUMBER:response_time}\"'
+    labels:
+      target: nginx
+      request_uri: '{{.request}}'
+      method: '{{.verb}}'
+      status: '{{.response}}'
+  - type: histogram
+    name: grok_http_response_time_seconds_hist
+    help: Time needed by NGINX to handle requests.
+    match: '%{IPORHOST:clientip} (?:-|(%{WORD}.%{WORD})) %{USER:ident} \[%{HTTPDATE:timestamp}\] \"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})\" %{NUMBER:response} (?:%{NUMBER:bytes}|-) %{QS:referrer} %{QS:agent} \"%{NUMBER:response_time}\"'
+    value: '{{.response_time}}'
+    labels:
+      target: nginx
+      request_uri: '{{.request}}'
+      method: '{{.verb}}'
+      status: '{{.response}}'
+    buckets: [0.1, 0.5, 1, 5, 10]
+server:
+  port: 9144
