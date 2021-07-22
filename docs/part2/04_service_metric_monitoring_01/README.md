@@ -341,6 +341,7 @@ $ sudo systemctl restart prometheus_nginxlog_exporter
 그 다음 `Nginx`에 여러 번 `curl`을 날려본다.
 
 ```bash
+# curl 5번 요청
 $ for i in {1..5}
 do
 curl localhost
