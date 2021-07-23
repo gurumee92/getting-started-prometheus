@@ -1,11 +1,10 @@
 services:
-  was:
-    container_name: was
-    build: .
+  app:
+    container_name: app
+    build: ./app
     ports:
       - "8080:8080"
 
-  # monitoring
   prometheus:
     container_name: prometheus
     image: prom/prometheus:latest
@@ -15,20 +14,18 @@ services:
       - '--web.console.libraries=/usr/share/prometheus/console_libraries'
       - '--web.console.templates=/usr/share/prometheus/consoles'
     volumes:
-      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
 
-  # dashboard & alert
   grafana:
-    image: grafana/grafana:7.3.7
+    image: grafana/grafana:latest
     ports:
       - "3000:3000"
     volumes:
-      - ./docker/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
-      - ./docker/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
-      - ./docker/dashboard_was.json:/var/lib/grafana/dashboards/dashboard_was.json
-
+      - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./grafana/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
+      - ./grafana/dashboard_was.json:/var/lib/grafana/dashboards/dashboard_was.json
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin # Viewer
