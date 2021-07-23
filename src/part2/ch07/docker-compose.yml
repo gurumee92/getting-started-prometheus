@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  
+  httpd:
+    container_name: httpd
+    image: httpd:latest
+    ports:
+      - 8080:80
+    volumes:
+      - ./httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./httpd/extra/server-status.conf:/usr/local/apache2/conf/extra/server-status.conf
+  
+  apache-exporter:
+    container_name: apache-exporter
+    image: motork/apache_exporter:latest
+    ports:
+      - 9117:9117
+    command: '--scrape_uri="http://httpd/server-status?auto"'
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+  
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./grafana/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
+      - ./grafana/dashboard.json:/var/lib/grafana/dashboards/dashboard.json
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
