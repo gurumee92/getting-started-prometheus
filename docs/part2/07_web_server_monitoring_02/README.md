@@ -191,7 +191,7 @@ apache_exporter_scrape_failures_total 1
 
 로컬 환경에서는 이미 설정 작업을 했기 떄문에 `docker compose`로 모두 구동하면 된다. 먼저 `Apache` 서버 설정을 보자. 다음과 같이 설정 파일을 만들어서 `status` 모듈을 활성화한다. 서버 환경에서는 `/etc/httpd/conf.d` 경로에 `server-status.conf`를 만들어서 다음 내용을 입력하면 된다.
 
-[src/part2/ch07/httpd/conf.d/server-status.conf]()
+[src/part2/ch07/httpd/conf.d/server-status.conf](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch07/httpd/conf.d/server-status.conf)
 ```conf
 ExtendedStatus on
 <Location "/server-status">
@@ -242,7 +242,7 @@ apache_accesses_total 1
 
 이전에는 `apache_exporter_scrape_failures_total` 메트릭이 수집되었다면 현재는 `apache_accesses_total`가 수집되고 있다. 이제 `Prometheus`가 설치된 서버에 접속해서 설정 파일을 다음과 같이 수정한다.
 
-[src/part2/ch07/prometheus/prometheus.yml]()
+[src/part2/ch07/prometheus/prometheus.yml](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch07/prometheus/prometheus.yml)
 ```yml
 # my global config
 global:
