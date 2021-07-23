@@ -368,8 +368,6 @@ nginx_up
 
 * [src/part2/ch06/grafana/dashboard.json](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch06/grafana/dashboard.json)
 
-그럼 다음과 같은 대시보드를 확인할 수 있다.
-
 먼저 그라파나에 접속한다. 그 후 "+" 버튼을 누른다.
 
 ![03](./03.png)
