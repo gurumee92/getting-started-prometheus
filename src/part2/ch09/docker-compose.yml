@@ -1,7 +1,11 @@
 services:
-  app:
-    container_name: app
-    build: ./app
+  tomcat:
+    container_name: tomcat
+    image: tomcat:latest
+    volumes:
+      - ./tomcat/bin/catalina.sh:/usr/local/tomcat/bin/catalina.sh
+      - ./tomcat/etc/config.yaml:/usr/local/tomcat/etc/config.yaml
+      - ./tomcat/etc/jmx_prometheus_javaagent-0.16.1.jar:/usr/local/tomcat/etc/jmx_prometheus_javaagent-0.16.1.jar
     ports:
       - "8080:8080"
 
