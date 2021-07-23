@@ -16,8 +16,7 @@
   "editable": true,
   "gnetId": 3457,
   "graphTooltip": 0,
-  "id": 1,
-  "iteration": 1627038905208,
+  "iteration": 1627039541890,
   "links": [],
   "panels": [
     {
@@ -2212,7 +2211,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -2243,5 +2242,5 @@
   "timezone": "",
   "title": "Java Application Monitoring - jmx-exporter",
   "uid": "M3xGDcZnz",
-  "version": 3
+  "version": 1
 }
