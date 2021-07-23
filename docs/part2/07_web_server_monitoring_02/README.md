@@ -21,7 +21,7 @@
 
 ## Apache 서버와 설치
 
-`Nginx`가 떠오르는 신흥 강자라면 `Apache` 웹 서버는 전통적인 강자이다. 리눅스는 물론 윈도우 기반 서버에서도 구동이 가능하며 아직까지 오픈 소스 웹 서버 기준 세계 점유율 1위를 차지하고 있다. 하지만 스레드/프로세스 기반으로 서버 리소스를 많이 쓰기 떄문에 점점 `Nginx`로 전환하는 분위기이다. 그럼에도 많은 시스템에서 이 웹 서버를 사용하기 떄문에 운영자 입장에서는 모니터링이 필수적으로 필요한 컴포넌트 중 하나이다.
+`Nginx`가 떠오르는 신흥 강자라면 `Apache` 웹 서버는 전통적인 강자이다. 리눅스는 물론 윈도우 기반 서버에서도 구동이 가능하며 아직까지 오픈 소스 웹 서버 기준 세계 점유율 1위를 차지하고 있다. 하지만 스레드/프로세스 기반으로 서버 리소스를 많이 쓰기 때문에 점점 `Nginx`로 전환하는 분위기이다. 그럼에도 많은 시스템에서 이 웹 서버를 사용하기 때문에 운영자 입장에서는 모니터링이 필수적으로 필요한 컴포넌트 중 하나이다.
 
 로컬 환경에서 설치는 다음과 같이 진행할 수 있다.
 
@@ -189,7 +189,7 @@ apache_exporter_scrape_failures_total 1
 
 ## 메트릭 수집을 위한 각 컴포넌트 설정
 
-로컬 환경에서는 이미 설정 작업을 했기 떄문에 `docker compose`로 모두 구동하면 된다. 먼저 `Apache` 서버 설정을 보자. 다음과 같이 설정 파일을 만들어서 `status` 모듈을 활성화한다. 서버 환경에서는 `/etc/httpd/conf.d` 경로에 `server-status.conf`를 만들어서 다음 내용을 입력하면 된다.
+로컬 환경에서는 이미 설정 작업을 했기 때문에 `docker compose`로 모두 구동하면 된다. 먼저 `Apache` 서버 설정을 보자. 다음과 같이 설정 파일을 만들어서 `status` 모듈을 활성화한다. 서버 환경에서는 `/etc/httpd/conf.d` 경로에 `server-status.conf`를 만들어서 다음 내용을 입력하면 된다.
 
 [src/part2/ch07/httpd/conf.d/server-status.conf](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch07/httpd/conf.d/server-status.conf)
 ```conf
