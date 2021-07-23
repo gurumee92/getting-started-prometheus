@@ -18,4 +18,4 @@ scrape_configs:
   - job_name: 'jmx-exporter'
     scrape_interval: 5s
     static_configs:
-      - targets: ["tomcat:8080"]
+      - targets: ["tomcat:8081"]

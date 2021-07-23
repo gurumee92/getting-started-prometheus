@@ -333,7 +333,7 @@ export JDK_JAVA_OPTIONS
 
 # ----- Execute The Requested Command -----------------------------------------
 
-CATALINA_OPTS="$CATALINA_OPTS -javaagent:/usr/local/tomcat/etc/jmx_prometheus_javaagent-0.16.1.jar=8080:/usr/local/tomcat/etc/config.yaml"
+CATALINA_OPTS="$CATALINA_OPTS -javaagent:/usr/local/tomcat/etc/jmx_prometheus_javaagent-0.16.1.jar=8081:/usr/local/tomcat/etc/config.yaml"
 
 
 # Bugzilla 37848: only output this if we have a TTY
