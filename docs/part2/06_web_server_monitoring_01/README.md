@@ -364,10 +364,36 @@ nginx_up
 
 ## NGINX 서버 모니터링을 위한 Grafana 대시보드 구축
 
-이제 대시보드를 구축한다. 다음 JSON 파일을 복사해서 대시보드를 임포트한다. (로컬 환경에는 이미 대시보드가 로드되어 있다.)
+이제 대시보드를 구축한다. 다음 JSON 파일을 복사해서 대시보드를 임포트한다. (로컬 환경에는 이미 대시보드가 로드되어 있다.) 다음 링크로 가서 JSON 파일을 복사한다.
 
 * [src/part2/ch06/grafana/dashboard.json](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch06/grafana/dashboard.json)
 
 그럼 다음과 같은 대시보드를 확인할 수 있다.
 
+먼저 그라파나에 접속한다. 그 후 "+" 버튼을 누른다.
+
 ![03](./03.png)
+
+그럼 아래와 같이 메뉴가 보이는데 "Import"를 누른다.
+
+![04](./04.png)
+
+그 후 위 링크에서 제공하고 있는 json 파일을 복사하여 붙여넣고 "Load"를 누른다.
+
+![05](./05.png)
+
+그럼 위와 같이 입력값들이 자동적으로 채워진다. "Import"를 누른다.
+
+![06](./06.png)
+
+그럼 다음 대시보드가 구축된다.
+
+![07](./07.png)
+
+다음과 같은 지표를 확인할 수 있다.
+
+* Nginx 구동 상태
+* Nginx Connection 상태
+* Nginx Connection 개수
+* Nginx 초당 요청 개수
+ 
