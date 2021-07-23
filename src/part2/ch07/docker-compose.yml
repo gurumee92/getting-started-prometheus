@@ -8,8 +8,8 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf
-      - ./httpd/extra/server-status.conf:/usr/local/apache2/conf/extra/server-status.conf
+      - ./httpd/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./httpd/conf.d/server-status.conf:/usr/local/apache2/conf.d/server-status.conf
   
   apache-exporter:
     container_name: apache-exporter
