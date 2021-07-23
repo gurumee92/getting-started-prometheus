@@ -4,8 +4,8 @@
 
 이 문서에서는 `Prometheus`로 `spring-boot`기반의 자바 애플리케이션의 메트릭을 수집한 후 `Grafana` 대시보드를 구축하는 것에 대하여 다룬다. 자세한 내용은 다음과 같다.
 
-* 자바, 빌드 도구 설치
-* Spring Boot Application 설정
+* 자바, 프로젝트 설치
+* Spring Boot Application 설정 살펴보기
 * Prometheus 설정
 * Spring Boot Application 서버 모니터링을 위한 Grafana 대시보드 구축
 
@@ -17,17 +17,112 @@
 
 ![01](./01.png)
 
-## 자바, Gradle 및 프로젝트 설치 (서버 환경)
+## 자바, 프로젝트 설치 (서버 환경)
 
+먼저 자바11을 설치한다.
 
-## Spring Boot Application 설정 훑어보기
+```bash
+# 패키지 인스톨
+$ sudo yum install java-11-openjdk-devel
 
-먼저 스프링 부트 기반의 WAS라면, `spring-boot-starter-actuator`와 `micrometer-registry-prometheus` 의존성이 필요하다. 보통 `gradle` 혹은 `maven`이라는 빌드 툴로 관리하는데, 각각의 도구에서 다음 코드처럼 의존성을 명시하면 된다.
+# 자바 버전 확인
+$ java -version
+openjdk version "11.0.11" 2021-04-20 LTS
+OpenJDK Runtime Environment 18.9 (build 11.0.11+9-LTS)
+OpenJDK 64-Bit Server VM 18.9 (build 11.0.11+9-LTS, mixed mode, sharing)
+```
+
+만약 11버전이 아니라 8(1.8)이 나온다면 서버를 재부팅한다. 그럼 11버전이 나올 것이다. 이제 프로젝트를 서버에 설치해보자.
+
+```bash
+$ pwd
+/home/sidelineowl
+
+# git clone
+$ git clone https://github.com/gurumee92/gurumee-book-prometheus.git
+
+# java app 소스 코드 복제
+$ cp -R ./gurumee-book-prometheus/src/part2/ch08/app ~/apps/java-app
+
+# java app 디렉토리로 이동
+$ cd ~/apps/java-app
+
+# gradlew 실행 권한 주기
+$ chmod +x gradlew
+
+# jar 빌드
+$ ./gradlew bootJar
+
+# 애플리케이션 실행
+$ java -jar build/libs/prometheus-example-0.0.1-SNAPSHOT.jar 
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.4.3)
+2021-07-23 08:06:34.501  INFO 3465 --- [           main] c.gurumee.prometheusexample.Application  : Starting Application using Java 11.0.11 on gbp-02 with PID 3465 (
+/home/sidelineowl/apps/java-app/build/libs/prometheus-example-0.0.1-SNAPSHOT.jar started by sidelineowl in /home/sidelineowl/apps/java-app)
+2021-07-23 08:06:34.507  INFO 3465 --- [           main] c.gurumee.prometheusexample.Application  : No active profile set, falling back to default profiles: default
+2021-07-23 08:06:36.607  INFO 3465 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-07-23 08:06:36.665  INFO 3465 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 10 ms. Found 0 JPA re
+pository interfaces.
+2021-07-23 08:06:37.659  INFO 3465 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2021-07-23 08:06:37.682  INFO 3465 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-07-23 08:06:37.682  INFO 3465 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.43]
+2021-07-23 08:06:37.798  INFO 3465 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-07-23 08:06:37.799  INFO 3465 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3131 ms
+2021-07-23 08:06:38.535  INFO 3465 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-07-23 08:06:38.842  INFO 3465 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-07-23 08:06:39.019  INFO 3465 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2021-07-23 08:06:39.113  INFO 3465 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.28.Final
+2021-07-23 08:06:39.376  INFO 3465 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-07-23 08:06:39.615  INFO 3465 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2021-07-23 08:06:40.027  INFO 3465 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engin
+e.transaction.jta.platform.internal.NoJtaPlatform]
+2021-07-23 08:06:40.045  INFO 3465 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'defaul
+t'
+2021-07-23 08:06:40.172  WARN 3465 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, databas
+e queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-07-23 08:06:40.555  INFO 3465 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2021-07-23 08:06:41.044  INFO 3465 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint(s) beneath base path '/actuator'
+2021-07-23 08:06:41.149  INFO 3465 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2021-07-23 08:06:41.183  INFO 3465 --- [           main] c.gurumee.prometheusexample.Application  : Started Application in 7.858 seconds (JVM running for 8.714)
+...
+```
+
+이번엔 애플리케이션을 리눅스 서비스로 말고 백그라운드 프로세스로 애플리케이션을 실행해보자.
+
+```bash
+$ pwd
+/home/sidelineowl/apps/java-app
+
+# 백그라운드 실행
+$ nohup java -jar build/libs/prometheus-example-0.0.1-SNAPSHOT.jar 1>/dev/null 2>&1 &
+
+# 메트릭 수집 엔드포인트 호출
+$ curl localhost:8080/actuator/prometheus
+# HELP tomcat_sessions_rejected_sessions_total  
+# TYPE tomcat_sessions_rejected_sessions_total counter
+tomcat_sessions_rejected_sessions_total{application="example",} 0.0
+# HELP jvm_buffer_count_buffers An estimate of the number of buffers in the pool
+# TYPE jvm_buffer_count_buffers gauge
+jvm_buffer_count_buffers{application="example",id="mapped",} 0.0
+jvm_buffer_count_buffers{application="example",id="direct",} 1.0
+...
+```
+
+이렇게 나오면 성공이다.
+
+## Spring Boot Application 설정 살펴보기
+
+먼저 스프링 부트 기반의 자바 애플리케이션이라면, `spring-boot-starter-actuator`와 `micrometer-registry-prometheus` 의존성이 필요하다. 보통 `gradle` 혹은 `maven`이라는 빌드 툴로 관리하는데, 각각의 도구에서 다음 코드처럼 의존성을 명시하면 된다.
 
 > 참고! 빌드 도구에 따른 의존성 관리 파일 경로
-> gradle의 경우에는 build.gradle, maven의 경우에는 pom.xml이 프로젝트 루트 디렉토리 최상단에 존재합니다. 이들을 수정하면 됩니다.
+> "Gradle"의 경우에는 build.gradle, "Maven"의 경우에는 pom.xml이 프로젝트 루트 디렉토리 최상단에 존재합니다. 이들을 수정하면 됩니다. 이 문서에서는 "Gradle"만 다룹니다.
 
-[src/part2/ch08/app/src/build.gradle]
+[src/part2/ch08/app/src/build.gradle](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch08/app/src/build.gradle)
 ```gradle
 // ...
 
@@ -43,7 +138,7 @@ dependencies {
 
 그리고 `application.yml`에 다음을 적어주면 된다.
 
-[src/part2/ch08/app/src/main/resources/application.yml]()
+[src/part2/ch08/app/src/main/resources/application.yml](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch08/app/src/main/resources/application.yml)
 ```yml
 spring:
   application:
@@ -80,7 +175,7 @@ management:
 
 `Prometheus`는 역시 다음과 같이 설정 파일을 수정하면 된다. 서버 환경에서라면, `/etc/prometheus/prometheus.yml`을 수정하자.
 
-[src/part2/ch08/prometheus/prometheus.yml]()
+[src/part2/ch08/prometheus/prometheus.yml](https://github.com/gurumee92/gurumee-book-prometheus/tree/master/src/part2/ch08/prometheus/prometheus.yml)
 ```yml
 # my global config
 global:
