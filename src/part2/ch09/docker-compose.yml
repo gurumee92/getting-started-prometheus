@@ -3,7 +3,7 @@ services:
     container_name: tomcat
     image: tomcat:latest
     volumes:
-      - ./tomcat/bin/catalina.sh:/usr/local/tomcat/bin/catalina.sh
+      - ./tomcat/bin/setenv.sh:/usr/local/tomcat/bin/setenv.sh
       - ./tomcat/etc/config.yaml:/usr/local/tomcat/etc/config.yaml
       - ./tomcat/etc/jmx_prometheus_javaagent-0.16.1.jar:/usr/local/tomcat/etc/jmx_prometheus_javaagent-0.16.1.jar
     ports:
